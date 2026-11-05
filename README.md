@@ -1,114 +1,105 @@
-# BHSERC – Generative AI Internship
+# BSERC – Generative AI & AI Agents Internship
 
-A collection of projects, experiments, and practical implementations developed during my remote internship at **BHSERC**, focused on exploring Generative AI concepts, tools, and applications.
+This repository contains my hands-on work, assignments, experiments, and implementations developed during the **BSERC Generative AI & AI Agents Internship**.
 
-## About
+The purpose of this repository is to maintain an organized record of my learning, document practical implementations, and track my progress while exploring Generative AI concepts and technologies.
 
-This repository serves as a central workspace for documenting my learning journey and hands-on work in Generative AI.
+## About the Internship
 
-It contains individual projects, coding exercises, experiments, and implementations covering different aspects of GenAI, with an emphasis on understanding concepts through practical development.
+The internship focuses on exploring Generative AI and AI Agent technologies through practical sessions, guided assignments, and hands-on implementations.
 
-## Objectives
+The repository serves as a centralized workspace for experimenting with different concepts, testing AI tools, and building small applications to understand how these technologies work in practice.
 
-- Understand the fundamentals of Generative AI and Large Language Models (LLMs).
-- Explore prompt engineering techniques and strategies.
-- Experiment with different GenAI frameworks, tools, and APIs.
-- Build practical applications using LLMs.
-- Understand concepts such as Retrieval-Augmented Generation (RAG).
-- Improve problem-solving and implementation skills through hands-on projects.
+## Topics & Learning Areas
+
+The following areas are explored throughout the internship:
+
+- **Generative AI:** Fundamentals of generative models and Large Language Models (LLMs).
+- **Prompt Engineering:** Designing, structuring, and refining prompts.
+- **Context Engineering:** Managing contextual information for LLM applications.
+- **Retrieval-Augmented Generation (RAG):** Document retrieval, embeddings, and knowledge-grounded generation.
+- **AI Agents:** Agent workflows, planning, tool calling, and task execution.
+- **AI Application Development:** Integrating LLMs into practical applications.
+- **APIs & Automation:** Connecting AI models with external tools and services.
+- **Evaluation & Reliability:** Testing outputs, handling errors, and assessing response quality.
 
 ## Repository Structure
 
 ```text
-BHSERC-GenAI-Internship/
+BSERC-GenAI-Internship/
 │
-├── 01-project-name/
-│   ├── README.md
-│   ├── main.py
-│   └── requirements.txt
-│
-├── 02-project-name/
+├── 01-prompt-engineering/
 │   ├── README.md
 │   └── main.py
 │
-├── 03-project-name/
+├── 02-llm-experiments/
 │   ├── README.md
 │   └── main.py
 │
-├── screenshots/
+├── 03-rag-implementation/
+│   ├── README.md
+│   └── main.py
+│
+├── assets/
+│   └── screenshots/
 │
 ├── .gitignore
 └── README.md
 ```
 
-Each project is maintained in a separate directory with its own documentation, source code, and dependencies wherever applicable.
+*The folder names and structure will evolve as new assignments and experiments are completed.*
 
-## Projects
+## Development Workflow
 
-| # | Project | Description | Status |
-|---|---|---|---|
-| 01 | Project Name | Brief description of the implementation | Upcoming |
-| 02 | Project Name | Brief description of the implementation | Upcoming |
-| 03 | Project Name | Brief description of the implementation | Upcoming |
+Each assignment or experiment generally follows this workflow:
 
-*Project descriptions and implementation details will be updated as work progresses.*
+1. **Understand:** Study the problem statement and relevant concepts.
+2. **Research:** Explore the required tools, models, and techniques.
+3. **Implement:** Develop the solution using the appropriate technologies.
+4. **Test:** Run experiments and verify the outputs.
+5. **Document:** Record the implementation, observations, and learnings.
 
 ## Technologies & Tools
 
-Technologies and frameworks explored throughout the internship may include:
+Technologies will be added as they are introduced and used in the assignments.
 
-- **Language:** Python
-- **AI/ML:** Generative AI, Large Language Models
-- **Concepts:** Prompt Engineering, RAG, Embeddings, Vector Search
-- **Tools:** Jupyter Notebook, Git, GitHub
-- **Frameworks:** To be updated based on project implementations
+- Python
+- Large Language Models (LLMs)
+- Prompt Engineering
+- Retrieval-Augmented Generation (RAG)
+- Embeddings and Vector Databases
+- AI Agent Frameworks
+- APIs and Automation
+- Git and GitHub
 
-## Learning Outcomes
+## Individual Project Documentation
 
-Through these implementations, I aim to develop practical knowledge of:
+Each project directory should contain its own README covering:
 
-- Working with LLMs and their APIs.
-- Designing effective prompts.
-- Building AI-powered applications.
-- Understanding document processing and information retrieval.
-- Integrating different AI tools and frameworks.
-- Writing modular, maintainable, and well-documented code.
+- Objective and problem statement
+- Concepts explored
+- Tools and technologies used
+- Implementation approach
+- Execution instructions
+- Sample inputs and outputs
+- Observations and learnings
 
-## Getting Started
+## Security & Repository Guidelines
 
-Clone the repository:
+- Keep API keys, tokens, passwords, and credentials out of the repository.
+- Store sensitive configuration in environment variables.
+- Add `.env` and other sensitive files to `.gitignore`.
+- Avoid uploading confidential internship documents or restricted materials.
+- Share repository access only with authorized collaborators.
 
-```bash
-git clone <repository-url>
-cd BHSERC-GenAI-Internship
-```
+## Progress Tracking
 
-Navigate to an individual project directory:
-
-```bash
-cd 01-project-name
-```
-
-Install the dependencies specified for that project:
-
-```bash
-pip install -r requirements.txt
-```
-
-Follow the instructions in the respective project's README to execute it.
-
-## Repository Updates
-
-This repository will be updated regularly as new projects, experiments, and implementations are completed during the internship.
-
-## Disclaimer
-
-This repository is intended for educational and learning purposes as part of my internship journey. Any confidential, proprietary, or restricted internship materials are excluded from this repository.
+This repository will be updated throughout the internship to maintain a record of completed assignments, experiments, technical implementations, and key learnings.
 
 ---
 
-**Author:** Your Name
+**Programme:** BSERC – Generative AI & AI Agents Internship
 
-**Focus:** Generative AI | Large Language Models | Python | AI Applications
+**Mode:** Remote
 
-**GitHub:** [Your GitHub Profile](https://github.com/your-username)
+**Official Website:** https://ai.bserc.org/
