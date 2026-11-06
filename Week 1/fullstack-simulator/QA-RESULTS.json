@@ -1,0 +1,289 @@
+{
+  "passed": 47,
+  "total": 47,
+  "failed": [],
+  "results": [
+    {
+      "round": "Round 1",
+      "test": "Architecture page initializes",
+      "ok": true,
+      "detail": "nodes=7"
+    },
+    {
+      "round": "Round 1",
+      "test": "Component inspector updates on selection",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 1",
+      "test": "Pause control changes simulation state",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 1",
+      "test": "Resume control restarts simulation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 1",
+      "test": "POST request completes with Created status",
+      "ok": true,
+      "detail": "201 Created"
+    },
+    {
+      "round": "Round 1",
+      "test": "Reset returns simulator to idle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 1",
+      "test": "Architecture can demonstrate 401 error responses",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 1",
+      "test": "No architecture runtime exceptions",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "round": "Round 2",
+      "test": "API playground initializes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "GET returns 200 and five sample records",
+      "ok": true,
+      "detail": "{'status': 200, 'data': {'data': [{'id': 1, 'name': 'Jordan Lee', 'email': 'jordan.lee@example.com', 'role': 'student'}, {'id': 2, 'name': 'Morgan Chen', 'email': 'morgan.chen@example.com', 'role': 'faculty'}, {'id': 3, 'name': 'Samira Patel', 'email': 'samira.patel@example.com', 'role': 'student'}, {'id': 4, 'name': 'Noah Williams', 'email': 'noah.williams@example.com', 'role': 'admin'}, {'id': 5, 'name': 'Avery Brooks', 'email': 'avery.brooks@example.com', 'role': 'student'}], 'count': 5}, 'message': None, 'time': 112}"
+    },
+    {
+      "round": "Round 2",
+      "test": "GET query string filters collection results",
+      "ok": true,
+      "detail": "{'status': 200, 'data': {'data': [{'id': 2, 'name': 'Morgan Chen', 'email': 'morgan.chen@example.com', 'role': 'faculty'}], 'count': 1}, 'message': None, 'time': 169}"
+    },
+    {
+      "round": "Round 2",
+      "test": "POST creates a record with 201",
+      "ok": true,
+      "detail": "{'status': 201, 'data': {'data': {'id': 6, 'name': 'QA Person', 'email': 'qa@example.com', 'role': 'student'}, 'message': 'User created.'}, 'message': None, 'time': 181}"
+    },
+    {
+      "round": "Round 2",
+      "test": "GET by ID reads the created record",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "PUT updates a record",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "DELETE removes a record",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "unauthorized returns HTTP 401",
+      "ok": true,
+      "detail": "401"
+    },
+    {
+      "round": "Round 2",
+      "test": "invalid record returns HTTP 400",
+      "ok": true,
+      "detail": "400"
+    },
+    {
+      "round": "Round 2",
+      "test": "missing record returns HTTP 404",
+      "ok": true,
+      "detail": "404"
+    },
+    {
+      "round": "Round 2",
+      "test": "server failure returns HTTP 500",
+      "ok": true,
+      "detail": "500"
+    },
+    {
+      "round": "Round 2",
+      "test": "Search filters database table",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Role filter updates database table",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Send button renders a response and history entry",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Request history restores method, endpoint, body and auth setting",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Clear history button empties request history",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Edit action loads a row into the PUT request editor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Delete table action executes a DELETE request",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Restore sample data resets database records",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "No API runtime exceptions",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "round": "Round 2",
+      "test": "Workflow page initializes with eight stages",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Stage navigation shows prerequisite lock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Debug lab detects injected frontend bug",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Applying fix allows tests to pass",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Seven required stages can be completed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Deployment succeeds after the test stage",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Deployment is required to complete the final stage",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Rollback resets deployment state",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "Workflow reset clears tasks, completion and deployment",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 2",
+      "test": "No workflow runtime exceptions",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "round": "Round 3",
+      "test": "architecture mobile viewport has no page-level horizontal overflow",
+      "ok": true,
+      "detail": "{'vw': 390, 'sw': 390, 'bw': 390}"
+    },
+    {
+      "round": "Round 3",
+      "test": "api mobile viewport has no page-level horizontal overflow",
+      "ok": true,
+      "detail": "{'vw': 390, 'sw': 390, 'bw': 390}"
+    },
+    {
+      "round": "Round 3",
+      "test": "workflow mobile viewport has no page-level horizontal overflow",
+      "ok": true,
+      "detail": "{'vw': 390, 'sw': 390, 'bw': 390}"
+    },
+    {
+      "round": "Round 3",
+      "test": "architecture navigation links point to all three pages",
+      "ok": true,
+      "detail": "['index.html', 'api-playground.html', 'workflow.html', 'index.html', 'api-playground.html', 'workflow.html']"
+    },
+    {
+      "round": "Round 3",
+      "test": "api navigation links point to all three pages",
+      "ok": true,
+      "detail": "['index.html', 'api-playground.html', 'workflow.html', 'index.html', 'api-playground.html', 'workflow.html']"
+    },
+    {
+      "round": "Round 3",
+      "test": "workflow navigation links point to all three pages",
+      "ok": true,
+      "detail": "['index.html', 'api-playground.html', 'workflow.html', 'index.html', 'api-playground.html', 'workflow.html']"
+    },
+    {
+      "round": "Round 3",
+      "test": "Architecture nodes can be dragged",
+      "ok": true,
+      "detail": "before={'x': 95, 'y': 300}; after={'x': 125, 'y': 324.59375}"
+    },
+    {
+      "round": "Round 3",
+      "test": "HTTP method selector changes request preview",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "round": "Round 3",
+      "test": "Pages do not depend on external assets",
+      "ok": true,
+      "detail": "[]"
+    }
+  ]
+}
