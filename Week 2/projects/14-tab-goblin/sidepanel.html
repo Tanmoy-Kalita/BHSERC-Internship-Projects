@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Goblin - Side Panel</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="sidepanel-container">
+    <header class="sidepanel-header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <path d="M9 9h6"></path>
+          <path d="M9 15h6"></path>
+          <path d="M9 12h6"></path>
+        </svg>
+        <span>Tab Goblin</span>
+      </div>
+      <div class="header-actions">
+        <button id="btnRefresh" class="btn-icon" title="Refresh List">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6"></path>
+            <path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+        <button id="btnSettings" class="btn-icon" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="search-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Search tabs, windows, groups..." autocomplete="off">
+    </div>
+
+    <div class="tabs-container">
+      <div class="view-switcher">
+        <button class="view-tab active" data-view="all">All Tabs</button>
+        <button class="view-tab" data-view="windows">Windows</button>
+        <button class="view-tab" data-view="groups">Groups</button>
+        <button class="view-tab" data-view="sessions">Sessions</button>
+        <button class="view-tab" data-view="suspended">Suspended</button>
+      </div>
+
+      <div class="tab-view active" id="viewAll">
+        <div class="toolbar">
+          <button id="btnGroupSelected" class="btn btn-secondary btn-sm" disabled>Group Selected</button>
+          <button id="btnSuspendSelected" class="btn btn-secondary btn-sm" disabled>Suspend Selected</button>
+          <button id="btnCloseSelected" class="btn btn-danger btn-sm" disabled>Close Selected</button>
+        </div>
+        <div class="list" id="allTabsList">
+          <div class="empty-state">Loading tabs...</div>
+        </div>
+      </div>
+
+      <div class="tab-view" id="viewWindows">
+        <div class="list" id="windowsList"></div>
+      </div>
+
+      <div class="tab-view" id="viewGroups">
+        <div class="list" id="groupsList"></div>
+      </div>
+
+      <div class="tab-view" id="viewSessions">
+        <div class="toolbar">
+          <button id="btnNewSession" class="btn btn-primary btn-sm">Save Current Window</button>
+        </div>
+        <div class="list" id="sessionsList"></div>
+      </div>
+
+      <div class="tab-view" id="viewSuspended">
+        <div class="toolbar">
+          <button id="btnRestoreAllSuspended" class="btn btn-secondary btn-sm">Restore All</button>
+          <button id="btnClearAllSuspended" class="btn btn-danger btn-sm">Clear All</button>
+        </div>
+        <div class="list" id="suspendedList"></div>
+      </div>
+    </div>
+
+    <footer class="sidepanel-footer">
+      <div class="quick-stats">
+        <span id="statTabs">0 Tabs</span>
+        <span id="statWindows">0 Windows</span>
+        <span id="statGroups">0 Groups</span>
+      </div>
+    </footer>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <!-- Modal -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Modal Title</h3>
+        <button id="btnModalClose" class="btn-icon">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

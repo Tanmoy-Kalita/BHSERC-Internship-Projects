@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle to Fix</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #1f2937;
+    }
+    .header {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon { font-size: 24px; }
+    .header-title { font-weight: 600; font-size: 16px; }
+    .header-subtitle { font-size: 11px; opacity: 0.9; }
+
+    .content { padding: 16px; }
+    .section { margin-bottom: 20px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary { background: #7c3aed; color: white; }
+    .btn-primary:hover { background: #6d28d9; }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+
+    .shortcuts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      font-size: 12px;
+    }
+    .shortcut {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .shortcut-key { font-family: monospace; background: #1f2937; color: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+    .shortcut-desc { color: #4b5563; }
+
+    .divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
+
+    .footer {
+      padding: 12px 16px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-link { font-size: 11px; color: #7c3aed; text-decoration: none; }
+    .version { font.size: 10px; color: #9ca3af; }
+
+    .status { display: flex; align-items: center; gap: 8px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+    .status-text { font-size: 13px; color: #166534; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="header-icon">🎯</span>
+    <div>
+      <div class="header-title">Circle to Fix</div>
+      <div class="header-subtitle" id="statusText">Click to activate</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="status" id="statusIndicator" style="display: none;">
+      <span class="status-dot"></span>
+      <span class="status-text">Active - Press Esc to exit</span>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Quick Actions</div>
+      <button class="btn btn-primary" id="btnToggle" onclick="toggleMode()">🎯 Activate Circle Mode</button>
+      <button class="btn btn-secondary" style="margin-top: 8px;" id="btnViewAnnotations" onclick="viewAnnotations()">📋 View Annotations</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title">Shortcuts (when active)</div>
+      <div class="shortcuts">
+        <div class="shortcut"><span class="shortcut-desc">Select</span><span class="shortcut-key">V</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Circle</span><span class="shortcut-key">C</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Rectangle</span><span class="shortcut-key">R</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Arrow</span><span class="shortcut-key">A</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Text</span><span class="shortcut-key">T</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Analyze</span><span class="shortcut-key">Enter</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Clear</span><span class="shortcut-key">Del</span></div>
+        <div class="shortcut"><span class="shortcut-desc">Exit</span><span class="shortcut-key">Esc</span></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <button class="btn btn-secondary" onclick="openOptions()">⚙️ Settings</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a class="footer-link" href="#" onclick="openOptions(); return false;">Settings</a>
+    <span class="version">v1.0.0</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

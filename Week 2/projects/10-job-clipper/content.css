@@ -1,0 +1,135 @@
+/* Job Clipper - Content Styles */
+.jc-toast {
+  position: fixed !important;
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(100px) !important;
+  background: #1a1a2e !important;
+  color: white !important;
+  padding: 14px 24px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  opacity: 0 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.jc-toast.show { transform: translateX(-50%) translateY(0) !important; opacity: 1 !important; }
+.jc-toast.success { background: #059669 !important; }
+.jc-toast.error { background: #dc2626 !important; }
+.jc-toast button { background: none !important; border: none !important; color: white !important; font-size: 18px !important; cursor: pointer !important; opacity: 0.7 !important; padding: 0 !important; line-height: 1 !important; }
+
+.jc-floating-btn {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 20px !important;
+  cursor: pointer !important;
+  z-index: 2147483646 !important;
+  transition: all 0.2s !important;
+  animation: jc-pulse 2s infinite !important;
+}
+@keyframes jc-pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4); } 50% { box-shadow: 0 4px 30px rgba(37, 99, 235, 0.6); transform: scale(1.05); } }
+.jc-floating-btn:hover { transform: scale(1.1) !important; box-shadow: 0 6px 28px rgba(37, 99, 235, 0.5) !important; }
+.jc-floating-btn:active { transform: scale(0.95) !important; }
+.jc-floating-btn.hidden { display: none !important; }
+
+.jc-extract-preview {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  width: 90% !important;
+  max-width: 520px !important;
+  max-height: 85vh !important;
+  background: white !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3) !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  display: none !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: jc-popIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+@keyframes jc-popIn { to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+.jc-extract-preview.show { display: flex !important; }
+.jc-extract-preview.dark { background: #1f1f1f !important; color: #eee !important; }
+
+.jc-preview-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #fafafa !important;
+}
+.jc-extract-preview.dark .jc-preview-header { background: #2a2a2a !important; border-color: #333 !important; }
+.jc-preview-title { font-weight: 600 !important; font-size: 16px !important; }
+.jc-preview-close { background: none !important; border: none !important; font-size: 24px !important; cursor: pointer !important; color: #666 !important; padding: 4px 8px !important; line-height: 1 !important; }
+.jc-preview-close:hover { color: #333 !important; }
+
+.jc-preview-body { padding: 20px !important; overflow-y: auto !important; flex: 1 !important; }
+.jc-field-group { margin-bottom: 16px !important; }
+.jc-field-label { font-size: 11px !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; color: #6b7280 !important; margin-bottom: 6px !important; display: flex !important; align-items: center !important; gap: 8px !important; }
+.jc-field-value { font-size: 14px !important; color: #1f2937 !important; line-height: 1.5 !important; word-wrap: break-word !important; }
+.jc-extract-preview.dark .jc-field-value { color: #eee !important; }
+.jc-field-value.empty { color: #9ca3af !important; font-style: italic !important; }
+.jc-confidence { font-size: 10px !important; padding: 2px 8px !important; border-radius: 10px !important; font-weight: 600 !important; }
+.jc-confidence.high { background: #dcfce7 !important; color: #166534 !important; }
+.jc-confidence.medium { background: #fef3c7 !important; color: #92400e !important; }
+.jc-confidence.low { background: #fee2e2 !important; color: #991b1b !important; }
+.jc-confidence.manual { background: #e0e7ff !important; color: #3730a3 !important; }
+
+.jc-preview-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  border-top: 1px solid #e5e7eb !important;
+  background: #fafafa !important;
+}
+.jc-extract-preview.dark .jc-preview-footer { background: #2a2a2a !important; border-color: #333 !important; }
+
+.jc-btn {
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.jc-btn-primary { background: #2563eb !important; color: white !important; }
+.jc-btn-primary:hover { background: #1d4ed8 !important; }
+.jc-btn-secondary { background: #f3f4f6 !important; color: #374151 !important; }
+.jc-extract-preview.dark .jc-btn-secondary { background: #374151 !important; color: #eee !important; }
+.jc-btn-secondary:hover { background: #e5e7eb !important; }
+.jc-extract-preview.dark .jc-btn-secondary:hover { background: #4b5563 !important; }
+.jc-btn-danger { background: #fef2f2 !important; color: #dc2626 !important; }
+.jc-btn-danger:hover { background: #fee2e2 !important; }
+
+/* Highlight detected job elements */
+.jc-highlight {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+  transition: outline 0.2s !important;
+}

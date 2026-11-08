@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Clipper - Board</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1f2937;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-icon { font-size: 22px; }
+    .header-title { font-weight: 600; font-size: 15px; }
+    .header-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      width: 30px; height: 30px; border-radius: 6px;
+      background: #f1f5f9; border: none; color: #475569;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .icon-btn:hover { background: #e2e8f0; color: #1f2937; }
+
+    .board { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 16px; display: flex; gap: 12px; align-items: flex-start; }
+    .column {
+      min-width: 260px;
+      max-width: 280px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+    }
+    .column-header {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .column-title { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; }
+    .column-count { background: #2563eb; color: white; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .column-drop-zone { min-height: 100px; flex: 1; overflow-y: auto; padding: 8px; }
+    .column-drop-zone.drag-over { background: #eff6ff; border: 2px dashed #2563eb; border-radius: 8px; }
+
+    .job-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      cursor: grab;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .job-card.dragging { opacity: 0.5; transform: rotate(2deg); }
+    .job-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+    .job-card-title { font-weight: 600; font-size: 13px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .job-card-company { font-size: 12px; color: #64748b; margin-bottom: 2px; }
+    .job-card-meta { display: flex; gap: 8px; font-size: 10px; color: #94a3b8; margin-top: 8px; flex-wrap: wrap; }
+    .job-card-meta span { display: flex; align-items: center; gap: 3px; }
+    .job-card-salary { font-size: 11px; font-weight: 600; color: #059669; margin-top: 6px; }
+    .job-card-actions { display: flex; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
+    .job-card-btn {
+      flex: 1; padding: 6px; border: none; border-radius: 4px;
+      font-size: 10px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .job-card-btn-primary { background: #2563eb; color: white; }
+    .job-card-btn-secondary { background: #f1f5f9; color: #475569; }
+    .job-card-btn-danger { background: #fef2f2; color: #dc2626; }
+
+    .add-column { min-width: 260px; max-width: 280px; }
+    .add-column-btn {
+      width: 100%; height: 100%; min-height: 200px;
+      border: 2px dashed #cbd5e1; border-radius: 10px;
+      background: transparent; color: #94a3b8;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; cursor: pointer; transition: all 0.15s;
+    }
+    .add-column-btn:hover { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
+    .add-column-icon { font-size: 32px; }
+    .add-column-text { font-size: 13px; font-weight: 500; }
+
+    /* Job Detail Modal */
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;
+      z-index: 1000; padding: 16px;
+    }
+    .modal.show { display: flex; }
+    .modal-content {
+      background: white; border-radius: 12px; width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto; animation: slideUp 0.2s;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #e2e8f0; }
+    .modal-title { font-weight: 600; font-size: 16px; }
+    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #64748b; }
+    .modal-body { padding: 16px; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 4px; }
+    .modal-value { font-size: 13px; color: #1f2937; }
+    .modal-textarea { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-family: inherit; min-height: 80px; resize: vertical; }
+    .modal-textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
+    .modal-select { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; background: white; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 16px; border-top: 1px solid #e2e8f0; }
+    .modal-btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .modal-btn-primary { background: #2563eb; color: white; }
+    .modal-btn-secondary { background: #f1f5f9; color: #475569; }
+    .modal-btn-danger { background: #fef2f2; color: #dc2626; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #1f2937; color: white; padding: 12px 20px; border-radius: 8px;
+      z-index: 2000; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #059669; }
+    .toast.error { background: #dc2626; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <span class="header-icon">📋</span>
+      <span class="header-title">Job Board</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnAddColumn" title="Add Column">➕</button>
+      <button class="icon-btn" id="btnExport" title="Export CSV">📊</button>
+      <button class="icon-btn" id="btnImport" title="Import CSV">📥</button>
+      <button class="icon-btn" id="btnSettings" title="Settings">⚙️</button>
+    </div>
+  </header>
+
+  <div class="board" id="board"></div>
+
+  <!-- Job Detail Modal -->
+  <div class="modal" id="jobModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalJobTitle">Job Details</h3>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-danger" onclick="deleteJob()">Delete</button>
+        <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
+        <button class="modal-btn modal-btn-primary" onclick="saveJobChanges()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Column Modal -->
+  <div class="modal" id="addColumnModal">
+    <div class="modal-content" style="max-width: 360px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Column</h3>
+        <button class="modal-close" onclick="closeAddColumnModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label">Column Name</label>
+          <input type="text" class="modal-textarea" id="newColumnName" placeholder="e.g., Phone Screen, Take-home Test" style="min-height: 40px;">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Color</label>
+          <select class="modal-select" id="newColumnColor">
+            <option value="#2563eb">🔵 Blue</option>
+            <option value="#059669">🟢 Green</option>
+            <option value="#dc2626">🔴 Red</option>
+            <option value="#ea580c">🟠 Orange</option>
+            <option value="#7c3aed">🟣 Purple</option>
+            <option value="#0891b2">🔷 Teal</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-secondary" onclick="closeAddColumnModal()">Cancel</button>
+        <button class="modal-btn modal-btn-primary" onclick="createColumn()">Add Column</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

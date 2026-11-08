@@ -1,0 +1,6 @@
+Thermodynamics Notes - Semester 4
+Instructor: Prof. R. Sharma
+Page 1: First Law: Energy conservation, dU = dQ - dW. Enthalpy H = U + PV.
+Page 2: Second Law: Kelvin-Planck and Clausius statements. Entropy dS >= dQ/T.
+Page 3: Heat Engines: Thermal efficiency eta = W_net / Q_in = 1 - T_C / T_H.
+Page 14: Carnot Theorem: No heat engine operating between two given thermal reservoirs can be more efficient than a reversible Carnot engine operating between the same reservoirs. Ideal reversible cycle involves isothermal expansion, adiabatic expansion, isothermal compression, and adiabatic compression.

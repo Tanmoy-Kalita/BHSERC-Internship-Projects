@@ -1,0 +1,17 @@
+[
+  { "id": 1, "subject": "Physics", "question": "What is the SI unit of electric charge?", "options": ["Volt", "Coulomb", "Ohm", "Tesla"], "correct": 1 },
+  { "id": 2, "subject": "Physics", "question": "Dimensional formula of Planck's constant is:", "options": ["[M L^2 T^-1]", "[M L T^-2]", "[M L^2 T^-2]", "[M L^0 T^-1]"], "correct": 0 },
+  { "id": 3, "subject": "Physics", "question": "A body is projected vertically upwards with velocity u. The maximum height attained is:", "options": ["u/2g", "u^2/2g", "u^2/g", "2u/g"], "correct": 1 },
+  { "id": 4, "subject": "Physics", "question": "Which of the following is not a conservative force?", "options": ["Gravitational force", "Electrostatic force", "Frictional force", "Elastic spring force"], "correct": 2 },
+  { "id": 5, "subject": "Physics", "question": "The time period of a simple pendulum on a freely falling elevator is:", "options": ["Zero", "Finite", "Infinite", "Same as ground"], "correct": 2 },
+  { "id": 6, "subject": "Chemistry", "question": "Which quantum number specifies the spatial orientation of an orbital?", "options": ["Principal", "Azimuthal", "Magnetic", "Spin"], "correct": 2 },
+  { "id": 7, "subject": "Chemistry", "question": "The hybridization of carbon in ethyne (acetylene) is:", "options": ["sp", "sp2", "sp3", "dsp2"], "correct": 0 },
+  { "id": 8, "subject": "Chemistry", "question": "Which of the following has highest electronegativity on Pauling scale?", "options": ["Oxygen", "Chlorine", "Fluorine", "Nitrogen"], "correct": 2 },
+  { "id": 9, "subject": "Chemistry", "question": "The pH of a 10^-3 M aqueous solution of HCl at 25°C is:", "options": ["1", "3", "7", "11"], "correct": 1 },
+  { "id": 10, "subject": "Chemistry", "question": "Which gas is evolved when zinc granules react with dilute sulfuric acid?", "options": ["Oxygen", "Hydrogen", "Sulfur dioxide", "Nitrogen"], "correct": 1 },
+  { "id": 11, "subject": "Mathematics", "question": "The derivative of sin(2x) with respect to x is:", "options": ["cos(2x)", "2 cos(2x)", "-2 cos(2x)", "1/2 cos(2x)"], "correct": 1 },
+  { "id": 12, "subject": "Mathematics", "question": "Value of limit as x->0 of (sin x) / x is:", "options": ["0", "1", "Infinity", "Undefined"], "correct": 1 },
+  { "id": 13, "subject": "Mathematics", "question": "If matrix A is symmetric, then A^T equals:", "options": ["-A", "A", "A^-1", "Identity"], "correct": 1 },
+  { "id": 14, "subject": "Mathematics", "question": "Number of subsets of a set containing 4 elements is:", "options": ["8", "12", "16", "32"], "correct": 2 },
+  { "id": 15, "subject": "Mathematics", "question": "The slope of a line perpendicular to y = 3x + 5 is:", "options": ["3", "-3", "1/3", "-1/3"], "correct": 3 }
+]

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Focus Board - Interactive Extension Simulator</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #f1f1f1;
+      display: flex;
+    }
+    .main-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #272727;
+      overflow-y: auto;
+    }
+    .header {
+      padding: 1rem 1.5rem;
+      background: #181818;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #272727;
+    }
+    .yt-mockup {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .video-mock {
+      background: #000;
+      height: 420px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 1.5rem;
+      border: 1px solid #333;
+    }
+    .gate-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 15, 15, 0.95);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      z-index: 20;
+    }
+    .gate-overlay.hidden { display: none; }
+    .side-view {
+      width: 420px;
+      height: 100%;
+      border-left: 1px solid #272727;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      background: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 0.6rem 0.8rem;
+      background: #272727;
+      border: 1px solid #444;
+      color: white;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-view">
+    <div class="header">
+      <div style="display:flex; align-items:center; gap:0.5rem; font-weight:bold; font-size:1.1rem;">
+        <span style="color:#cc0000; font-size:1.4rem;">▶</span> YouTube Focus Mode Simulator
+      </div>
+      <div>
+        <span id="gateTimer" style="font-family:monospace; background:#222; padding:0.3rem 0.6rem; border-radius:4px; color:#38bdf8;">Locked</span>
+      </div>
+    </div>
+
+    <div class="yt-mockup">
+      <div class="video-mock">
+        <div id="gateOverlay" class="gate-overlay">
+          <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">🛑 Why are you here?</h2>
+          <p style="color:#aaa; font-size:0.9rem; max-width:400px;">To open YouTube for fun or study, state your intention. This unlocks a 60-minute focused study session.</p>
+          <input type="text" id="intentionInput" placeholder="e.g. Revising Thermodynamics Carnot cycle..." value="Revising thermodynamics">
+          <button id="btnUnlock" class="btn">Unlock for 60 Minutes</button>
+        </div>
+        <div style="text-align:center;">
+          <h3 style="font-size:1.3rem; margin-bottom:0.5rem;">Physics · Carnot Cycle & Heat Engines</h3>
+          <p style="color:#888;">Shorts and comments hidden · Study Mode Active</p>
+        </div>
+      </div>
+      <div style="background:#181818; padding:1.5rem; border-radius:12px; border:1px solid #272727;">
+        <h4 style="margin-bottom:0.5rem;">Protected by YouTube Focus Board</h4>
+        <p style="color:#aaa; font-size:0.85rem;">Recommendations, Shorts feeds, and toxic comments are stripped. Click timestamps in the right side panel to navigate your lecture notes!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="side-view">
+    <iframe src="sidepanel.html"></iframe>
+  </div>
+
+  <script>
+    const gateOverlay = document.getElementById('gateOverlay');
+    const btnUnlock = document.getElementById('btnUnlock');
+    const intentionInput = document.getElementById('intentionInput');
+    const gateTimer = document.getElementById('gateTimer');
+
+    btnUnlock.addEventListener('click', () => {
+      const txt = intentionInput.value.trim() || 'Studying';
+      gateOverlay.classList.add('hidden');
+      let mins = 60;
+      gateTimer.textContent = `Unlocked: ${mins}m left (${txt})`;
+      setInterval(() => {
+        mins = Math.max(0, mins - 1);
+        gateTimer.textContent = `Unlocked: ${mins}m left (${txt})`;
+      }, 60000);
+    });
+  </script>
+</body>
+</html>

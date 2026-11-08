@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Track your reel watching habits with a cute growing monster">
+  <title>Reel Monster 👾</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    @import url('data:text/css,');
+    :root {
+      --bg1: #1a1a2e;
+      --bg2: #16213e;
+      --bg3: #0f3460;
+      --accent: #e94560;
+      --accent2: #ff6b6b;
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.12);
+      --text: #ffffff;
+      --text-dim: rgba(255,255,255,0.6);
+      --text-mid: rgba(255,255,255,0.85);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg1);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      color: var(--text);
+      position: relative;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(233,69,96,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(15,52,96,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(102,51,153,0.2) 0%, transparent 50%),
+        linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      z-index: -1;
+      animation: bgShift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgShift {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(30deg); }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(233,69,96,0.15);
+      animation: floatParticle linear infinite;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ============= APP LAYOUT ============= */
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+      position: relative;
+      z-index: 1;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+    }
+
+    /* Header */
+    header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .header-left h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b6b, #e94560, #c44dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-icon {
+      font-size: 1.4rem;
+      animation: headerBounce 2s ease-in-out infinite;
+    }
+    @keyframes headerBounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-3px) rotate(-5deg); }
+      75% { transform: translateY(-3px) rotate(5deg); }
+    }
+
+    /* Level Toggle */
+    .level-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.3rem 0.4rem 0.3rem 0.75rem;
+      border-radius: 25px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s;
+    }
+    .level-toggle:hover { background: rgba(255,255,255,0.12); }
+    .level-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+    .toggle-track {
+      width: 44px;
+      height: 24px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    .toggle-track.active {
+      background: linear-gradient(135deg, #e94560, #c44dff);
+    }
+    .toggle-thumb {
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 20px; height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .toggle-track.active .toggle-thumb {
+      transform: translateX(20px);
+    }
+
+    /* ============= MAIN CONTENT ============= */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 1.25rem 2rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 1.25rem;
+    }
+
+    /* ============= MONSTER SECTION ============= */
+    .monster-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      position: relative;
+      width: 100%;
+    }
+
+    /* Speech bubble */
+    .speech-bubble {
+      background: rgba(255,255,255,0.95);
+      color: #1a1a2e;
+      padding: 0.5rem 1rem;
+      border-radius: 18px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      max-width: 260px;
+      animation: speechPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all 0.3s;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid rgba(255,255,255,0.95);
+    }
+    @keyframes speechPop {
+      0% { transform: scale(0) translateY(10px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    /* Monster body */
+    .monster {
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation: monsterBounce 3s ease-in-out infinite;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .monster:active {
+      animation: none !important;
+      transform: scale(0.9) !important;
+    }
+
+    @keyframes monsterBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-12px) scale(1.03); }
+      60% { transform: translateY(-5px) scale(1.01); }
+    }
+
+    .monster-body {
+      border-radius: 50% 50% 48% 48%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* Monster glow effect */
+    .monster-body::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: -30%;
+      width: 160%;
+      height: 160%;
+      background: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.2), transparent 60%);
+      animation: glowSpin 6s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes glowSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Monster size states */
+    .monster-body.state-tiny {
+      width: 100px; height: 100px;
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      box-shadow: 0 8px 30px rgba(78,205,196,0.4), 0 0 60px rgba(78,205,196,0.15);
+    }
+    .monster-body.state-small {
+      width: 130px; height: 130px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+      box-shadow: 0 10px 40px rgba(238,90,90,0.4), 0 0 60px rgba(238,90,90,0.15);
+    }
+    .monster-body.state-medium {
+      width: 165px; height: 165px;
+      background: linear-gradient(135deg, #e94560, #c44dff);
+      box-shadow: 0 12px 50px rgba(233,69,96,0.5), 0 0 80px rgba(196,77,255,0.2);
+    }
+    .monster-body.state-large {
+      width: 200px; height: 200px;
+      background: linear-gradient(135deg, #8b00ff, #e94560);
+      box-shadow: 0 15px 60px rgba(139,0,255,0.5), 0 0 100px rgba(233,69,96,0.2);
+      animation: monsterPulse 2s ease-in-out infinite;
+    }
+    @keyframes monsterPulse {
+      0%, 100% { box-shadow: 0 15px 60px rgba(139,0,255,0.5), 0 0 100px rgba(233,69,96,0.2); }
+      50% { box-shadow: 0 15px 80px rgba(139,0,255,0.7), 0 0 120px rgba(233,69,96,0.3); }
+    }
+
+    /* Monster face */
+    .m-face { display: flex; flex-direction: column; align-items: center; z-index: 2; }
+    .m-emoji {
+      font-size: 2.5rem;
+      transition: font-size 0.5s;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      line-height: 1;
+    }
+    .state-tiny .m-emoji { font-size: 2rem; }
+    .state-small .m-emoji { font-size: 2.8rem; }
+    .state-medium .m-emoji { font-size: 3.5rem; }
+    .state-large .m-emoji { font-size: 4.2rem; }
+
+    /* Eyes (CSS) */
+    .m-eyes { display: flex; gap: 14px; margin-bottom: 6px; }
+    .m-eye {
+      width: 22px; height: 26px;
+      background: white;
+      border-radius: 50%;
+      position: relative;
+      animation: eyeBlink 4s infinite;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .m-eye::after {
+      content: '';
+      position: absolute;
+      width: 12px; height: 12px;
+      background: #1a1a2e;
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: eyeLook 5s ease-in-out infinite;
+    }
+    .m-eye::before {
+      content: '';
+      position: absolute;
+      width: 4px; height: 4px;
+      background: white;
+      border-radius: 50%;
+      top: 6px; right: 4px;
+      z-index: 1;
+    }
+    @keyframes eyeBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.05); }
+    }
+    @keyframes eyeLook {
+      0%, 100% { transform: translate(-50%, -50%); }
+      20% { transform: translate(-70%, -60%); }
+      40% { transform: translate(-30%, -50%); }
+      60% { transform: translate(-60%, -40%); }
+      80% { transform: translate(-40%, -60%); }
+    }
+
+    /* State-dependent eye sizes */
+    .state-tiny .m-eye { width: 16px; height: 20px; }
+    .state-tiny .m-eye::after { width: 9px; height: 9px; }
+    .state-tiny .m-eyes { gap: 10px; }
+    .state-medium .m-eye { width: 26px; height: 30px; }
+    .state-medium .m-eye::after { width: 14px; height: 14px; }
+    .state-medium .m-eyes { gap: 18px; }
+    .state-large .m-eye { width: 30px; height: 36px; }
+    .state-large .m-eye::after { width: 16px; height: 16px; }
+    .state-large .m-eyes { gap: 22px; }
+
+    /* Mouth */
+    .m-mouth {
+      width: 24px; height: 12px;
+      border-bottom: 3px solid rgba(0,0,0,0.5);
+      border-radius: 0 0 16px 16px;
+      transition: all 0.3s;
+    }
+    .state-medium .m-mouth, .state-large .m-mouth {
+      width: 32px; height: 18px;
+      border-bottom-width: 4px;
+      border-radius: 0 0 20px 20px;
+    }
+    .state-large .m-mouth {
+      background: rgba(0,0,0,0.3);
+      border-bottom: none;
+      width: 36px; height: 20px;
+      border-radius: 0 0 24px 24px;
+    }
+
+    /* Horns for larger states */
+    .m-horns {
+      display: none;
+      position: absolute;
+      top: -8px;
+      width: 100%;
+      justify-content: center;
+      gap: 40px;
+      z-index: 3;
+    }
+    .m-horn {
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 16px solid;
+      border-bottom-color: inherit;
+    }
+    .state-medium .m-horns, .state-large .m-horns { display: flex; }
+    .state-medium .m-horn { border-bottom-color: #c44dff; }
+    .state-large .m-horn { border-bottom-color: #8b00ff; border-bottom-width: 22px; }
+    .state-large .m-horns { gap: 60px; top: -12px; }
+
+    /* Tap ripple effect */
+    .tap-ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      animation: rippleOut 0.6s ease-out forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+    @keyframes rippleOut {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 200px; height: 200px; margin-top: -100px; margin-left: -100px; opacity: 0; }
+    }
+
+    /* +1 floating text */
+    .plus-one {
+      position: absolute;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      pointer-events: none;
+      animation: floatUp 1s ease-out forwards;
+      z-index: 10;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+    }
+
+    /* Monster count badge */
+    .monster-badge {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #1a1a2e, #2c2c54);
+      color: white;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.15);
+      min-width: 65px;
+      text-align: center;
+      z-index: 4;
+    }
+
+    /* ============= TAP BUTTON ============= */
+    .tap-section {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tap-btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+    .tap-btn.manual {
+      background: linear-gradient(135deg, #e94560, #c44dff);
+      color: white;
+      box-shadow: 0 6px 25px rgba(233,69,96,0.4);
+    }
+    .tap-btn.manual:hover {
+      box-shadow: 0 8px 35px rgba(233,69,96,0.5);
+      transform: translateY(-2px);
+    }
+    .tap-btn.manual:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 3px 15px rgba(233,69,96,0.3);
+    }
+
+    .tap-btn.auto {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+      box-shadow: 0 6px 25px rgba(39,174,96,0.4);
+    }
+    .tap-btn.auto.running {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      box-shadow: 0 6px 25px rgba(231,76,60,0.4);
+    }
+    .tap-btn.auto:active {
+      transform: scale(0.98);
+    }
+
+    .auto-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .auto-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #27ae60;
+      animation: autoPulse 1s ease-in-out infinite;
+    }
+    .auto-dot.stopped { background: #e74c3c; animation: none; }
+    @keyframes autoPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+
+    /* ============= STATS CARDS ============= */
+    .stats-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.25rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .stats-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0.75rem 0.25rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat-icon { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #fff, #ccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.15rem;
+      font-weight: 600;
+    }
+
+    /* ============= CHART SECTION ============= */
+    .chart-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.25rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .chart-header h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .chart-header button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .chart-header button:hover {
+      background: rgba(233,69,96,0.15);
+    }
+
+    /* Bar chart container */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 6px;
+      height: 120px;
+      padding-top: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+    .bar-value {
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--text-mid);
+    }
+    .bar {
+      width: 100%;
+      max-width: 32px;
+      min-height: 3px;
+      border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, #e94560, #c44dff);
+      transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+      border-radius: 6px 6px 0 0;
+    }
+    .bar.today {
+      background: linear-gradient(180deg, #ff6b6b, #e94560);
+      box-shadow: 0 0 12px rgba(233,69,96,0.4);
+    }
+    .bar-day {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+    .bar-day.today { color: var(--accent2); }
+
+    /* ============= RESET BUTTON ============= */
+    .reset-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-dim);
+      padding: 0.6rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+    }
+    .reset-btn:hover {
+      background: rgba(231,76,60,0.15);
+      border-color: rgba(231,76,60,0.3);
+      color: #e74c3c;
+    }
+
+    /* ============= TOAST ============= */
+    .toast-container {
+      position: fixed;
+      top: calc(1rem + var(--safe-top));
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    .toast-container.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-msg {
+      background: rgba(30,30,50,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    /* ============= INSTALL PROMPT ============= */
+    .install-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: rgba(30,30,50,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 1.25rem calc(1rem + var(--safe-bottom));
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 500;
+      animation: slideUp 0.4s ease-out;
+    }
+    .install-bar.show { display: flex; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .install-bar p { font-size: 0.8rem; color: var(--text-mid); font-weight: 600; }
+    .install-btn {
+      background: linear-gradient(135deg, #e94560, #c44dff);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .install-dismiss {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    /* ============= RESPONSIVE ============= */
+    @media (min-width: 480px) {
+      .monster-stage { min-height: 260px; }
+      .stat-value { font-size: 1.6rem; }
+    }
+
+    @media (max-height: 650px) {
+      .monster-stage { min-height: 180px; }
+      .bar-chart { height: 80px; }
+    }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      z-index: 9998;
+      pointer-events: none;
+      animation: confettiFall 1.5s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="app">
+    <header>
+      <div class="header-left">
+        <span class="header-icon">👾</span>
+        <h1>Reel Monster</h1>
+      </div>
+      <div class="level-toggle" id="levelToggle" onclick="toggleLevel()">
+        <span class="level-label" id="levelLabel">Manual</span>
+        <div class="toggle-track" id="toggleTrack">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Monster Area -->
+      <div class="monster-stage">
+        <div class="speech-bubble" id="speechBubble">Tap me to start! 🎬</div>
+        <div class="monster" id="monster" onclick="tapMonster()">
+          <div class="m-horns" id="monsterHorns">
+            <div class="m-horn"></div>
+            <div class="m-horn"></div>
+          </div>
+          <div class="monster-body state-tiny" id="monsterBody">
+            <div class="m-face">
+              <div class="m-eyes">
+                <div class="m-eye"></div>
+                <div class="m-eye"></div>
+              </div>
+              <div class="m-mouth" id="monsterMouth"></div>
+            </div>
+          </div>
+          <div class="monster-badge" id="monsterBadge">0</div>
+        </div>
+      </div>
+
+      <!-- Tap / Auto Button -->
+      <div class="tap-section" id="tapSection">
+        <button class="tap-btn manual" id="tapBtn" onclick="tapMonster()">
+          👆 Tap After Each Reel
+        </button>
+      </div>
+
+      <!-- Today's Stats -->
+      <div class="stats-card">
+        <div class="stats-title">📊 Today's Stats</div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-icon">🎬</div>
+            <div class="stat-value" id="statReels">0</div>
+            <div class="stat-label">Reels</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value" id="statTime">0s</div>
+            <div class="stat-label">Time Lost</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">All-Time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-Day Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>📅 Last 7 Days</h3>
+          <button onclick="clearAllData()">Reset All</button>
+        </div>
+        <div class="bar-chart" id="barChart"></div>
+      </div>
+
+      <button class="reset-btn" onclick="resetToday()">🔄 Reset Today's Count</button>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer">
+    <div class="toast-msg" id="toastMsg"></div>
+  </div>
+
+  <!-- Install bar -->
+  <div class="install-bar" id="installBar">
+    <p>📲 Install Reel Monster</p>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <button class="install-btn" id="installBtn" onclick="installApp()">Install</button>
+      <button class="install-dismiss" onclick="dismissInstall()">✕</button>
+    </div>
+  </div>
+
+  <script>
+    // ============= STATE =============
+    const STORAGE_KEYS = {
+      history: 'reelMonster_history',
+      level: 'reelMonster_level',
+      todayDate: 'reelMonster_todayDate',
+    };
+
+    let state = {
+      level: 1,          // 1=manual, 2=auto
+      todayCount: 0,
+      history: {},        // { 'YYYY-MM-DD': count }
+      autoRunning: false,
+    };
+
+    let autoInterval = null;
+    let autoCountdown = 30;
+    let deferredInstallPrompt = null;
+
+    // ============= INIT =============
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      updateUI();
+      renderChart();
+      createParticles();
+      checkMidnightReset();
+    });
+
+    function getToday() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEYS.history);
+        if (saved) state.history = JSON.parse(saved);
+      } catch(e) { state.history = {}; }
+
+      state.level = parseInt(localStorage.getItem(STORAGE_KEYS.level) || '1');
+      const savedDate = localStorage.getItem(STORAGE_KEYS.todayDate);
+      const today = getToday();
+
+      if (savedDate !== today) {
+        // New day - start fresh count
+        state.todayCount = 0;
+        localStorage.setItem(STORAGE_KEYS.todayDate, today);
+      } else {
+        state.todayCount = state.history[today] || 0;
+      }
+
+      // Ensure today exists in history
+      if (!state.history[today]) state.history[today] = 0;
+      state.todayCount = state.history[today];
+
+      // Apply level
+      if (state.level === 2) {
+        document.getElementById('toggleTrack').classList.add('active');
+        document.getElementById('levelLabel').textContent = 'Auto';
+        updateTapButton();
+      }
+    }
+
+    function saveState() {
+      const today = getToday();
+      state.history[today] = state.todayCount;
+      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(state.history));
+      localStorage.setItem(STORAGE_KEYS.level, state.level);
+      localStorage.setItem(STORAGE_KEYS.todayDate, today);
+    }
+
+    // ============= MIDNIGHT RESET =============
+    function checkMidnightReset() {
+      setInterval(() => {
+        const today = getToday();
+        const savedDate = localStorage.getItem(STORAGE_KEYS.todayDate);
+        if (savedDate !== today) {
+          state.todayCount = 0;
+          state.history[today] = 0;
+          localStorage.setItem(STORAGE_KEYS.todayDate, today);
+          saveState();
+          updateUI();
+          renderChart();
+          showToast('🌅 New day! Counter reset.');
+        }
+      }, 30000); // Check every 30 seconds
+    }
+
+    // ============= CORE: INCREMENT =============
+    function incrementCount() {
+      state.todayCount++;
+      saveState();
+      updateUI();
+      renderChart();
+      playTapSound();
+      spawnPlusOne();
+      checkMilestones();
+    }
+
+    function tapMonster() {
+      if (state.level === 2 && state.autoRunning) return; // auto mode running, ignore manual
+      incrementCount();
+
+      // Visual feedback on monster
+      const body = document.getElementById('monsterBody');
+      body.style.transform = 'scale(1.1)';
+      setTimeout(() => { body.style.transform = ''; }, 150);
+    }
+
+    // ============= LEVEL TOGGLE =============
+    function toggleLevel() {
+      if (state.level === 1) {
+        state.level = 2;
+        document.getElementById('toggleTrack').classList.add('active');
+        document.getElementById('levelLabel').textContent = 'Auto';
+        showToast('🤖 Auto mode! Counts every 30 sec');
+      } else {
+        state.level = 1;
+        document.getElementById('toggleTrack').classList.remove('active');
+        document.getElementById('levelLabel').textContent = 'Manual';
+        stopAuto();
+        showToast('👆 Manual mode! Tap to count');
+      }
+      saveState();
+      updateTapButton();
+    }
+
+    function updateTapButton() {
+      const btn = document.getElementById('tapBtn');
+      const section = document.getElementById('tapSection');
+
+      if (state.level === 1) {
+        section.innerHTML = `
+          <button class="tap-btn manual" id="tapBtn" onclick="tapMonster()">
+            👆 Tap After Each Reel
+          </button>
+        `;
+      } else {
+        const running = state.autoRunning;
+        section.innerHTML = `
+          <button class="tap-btn auto ${running ? 'running' : ''}" id="autoBtn" onclick="toggleAuto()">
+            ${running ? '⏸️ Stop Auto-Count' : '▶️ Start Auto-Count (30s)'}
+          </button>
+          ${running ? `<div class="auto-indicator"><div class="auto-dot"></div><span id="autoCountdownLabel">Next reel in ${autoCountdown}s</span></div>` : `<div class="auto-indicator"><div class="auto-dot stopped"></div><span>Simulates watching reels automatically</span></div>`}
+        `;
+      }
+    }
+
+    function toggleAuto() {
+      if (state.autoRunning) {
+        stopAuto();
+      } else {
+        startAuto();
+      }
+      updateTapButton();
+    }
+
+    function startAuto() {
+      state.autoRunning = true;
+      autoCountdown = 30;
+      autoInterval = setInterval(() => {
+        autoCountdown--;
+        const label = document.getElementById('autoCountdownLabel');
+        if (label) label.textContent = `Next reel in ${autoCountdown}s`;
+
+        if (autoCountdown <= 0) {
+          autoCountdown = 30;
+          incrementCount();
+          // Pulse effect on button
+          const btn = document.getElementById('autoBtn');
+          if (btn) {
+            btn.style.transform = 'scale(1.05)';
+            setTimeout(() => { if (btn) btn.style.transform = ''; }, 200);
+          }
+        }
+      }, 1000);
+    }
+
+    function stopAuto() {
+      state.autoRunning = false;
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+      }
+      autoCountdown = 30;
+    }
+
+    // ============= UPDATE UI =============
+    function updateUI() {
+      const count = state.todayCount;
+
+      // Badge
+      document.getElementById('monsterBadge').textContent = count;
+
+      // Stats
+      document.getElementById('statReels').textContent = count;
+
+      // Time lost (count × 30 seconds)
+      const totalSeconds = count * 30;
+      let timeStr;
+      if (totalSeconds < 60) {
+        timeStr = totalSeconds + 's';
+      } else if (totalSeconds < 3600) {
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        timeStr = mins + 'm' + (secs > 0 ? ' ' + secs + 's' : '');
+      } else {
+        const hrs = Math.floor(totalSeconds / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        timeStr = hrs + 'h ' + mins + 'm';
+      }
+      document.getElementById('statTime').textContent = timeStr;
+
+      // All-time total
+      const allTime = Object.values(state.history).reduce((a, b) => a + b, 0);
+      document.getElementById('statStreak').textContent = allTime;
+
+      // Monster state
+      updateMonsterState(count);
+    }
+
+    function updateMonsterState(count) {
+      const body = document.getElementById('monsterBody');
+      const bubble = document.getElementById('speechBubble');
+      const mouth = document.getElementById('monsterMouth');
+
+      // Remove all states
+      body.classList.remove('state-tiny', 'state-small', 'state-medium', 'state-large');
+
+      if (count <= 5) {
+        body.classList.add('state-tiny');
+        bubble.textContent = getSmallMessage(count);
+      } else if (count <= 15) {
+        body.classList.add('state-small');
+        bubble.textContent = getMediumMessage(count);
+      } else if (count <= 30) {
+        body.classList.add('state-medium');
+        bubble.textContent = getLargeMessage(count);
+      } else {
+        body.classList.add('state-large');
+        bubble.textContent = getHugeMessage(count);
+      }
+    }
+
+    function getSmallMessage(c) {
+      const msgs = [
+        "Just getting started! 😊",
+        "Hello there! 👋",
+        "Feed me reels! 🍼",
+        "I'm a tiny monster! 🐣",
+        "Nom nom... 😋",
+        "One more won't hurt! 🤭"
+      ];
+      if (c === 0) return "Tap me to start! 🎬";
+      return msgs[c % msgs.length];
+    }
+
+    function getMediumMessage(c) {
+      const msgs = [
+        "Yum! Your evening tastes great 🍕",
+        "Getting hooked... 🎣",
+        "I'm growing! Feed me more! 🌱",
+        "Dopamine go brrr 🧠",
+        "Your attention is delicious! 😋",
+        "Just 5 more minutes... 🕐"
+      ];
+      return msgs[c % msgs.length];
+    }
+
+    function getLargeMessage(c) {
+      const msgs = [
+        "Burp! Your homework says hi 📚",
+        "I can see your screen time 📊",
+        "Your plans called. They're crying. 😢",
+        "I'm getting THICC 🍑",
+        "Touch grass? Never heard of it 🌿",
+        "Your sleep schedule sends regards 💀"
+      ];
+      return msgs[c % msgs.length];
+    }
+
+    function getHugeMessage(c) {
+      const msgs = [
+        "I ate your whole day! 😈",
+        "ABSOLUTE UNIT 💪",
+        "Productivity? Deleted. 🗑️",
+        "I AM the algorithm now 🤖",
+        "Your future self is disappointed 👴",
+        "World record holder! 🏆",
+        "Plot twist: I'm your boss now 👔",
+        "You can't stop. I won't let you 🔒"
+      ];
+      return msgs[c % msgs.length];
+    }
+
+    // ============= MILESTONES =============
+    function checkMilestones() {
+      const c = state.todayCount;
+      const milestones = {
+        1: "First reel! Let's go! 🎬",
+        5: "5 reels! Monster is growing! 🌱",
+        10: "Double digits! 🔟",
+        15: "Monster evolution! 🧬",
+        25: "Quarter century of reels! 📺",
+        30: "30 reels... monster is HUGE! 😱",
+        50: "Half century! 🏏",
+        69: "Nice. 😏",
+        100: "💯 CENTURY! You absolute legend!",
+        150: "150! Seek help... or don't 🤷",
+        200: "200 reels. This IS your life now 🌊",
+      };
+      if (milestones[c]) {
+        showToast(milestones[c]);
+        if (c >= 50) spawnConfetti();
+      }
+    }
+
+    // ============= +1 FLOATING TEXT =============
+    function spawnPlusOne() {
+      const monster = document.getElementById('monster');
+      const rect = monster.getBoundingClientRect();
+      const el = document.createElement('div');
+      el.className = 'plus-one';
+      el.textContent = '+1';
+      el.style.left = (rect.left + rect.width / 2 - 15 + (Math.random() * 30 - 15)) + 'px';
+      el.style.top = (rect.top - 10) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }
+
+    // ============= CONFETTI =============
+    function spawnConfetti() {
+      const colors = ['#e94560', '#c44dff', '#ff6b6b', '#4ecdc4', '#f9ca24', '#6c5ce7', '#00b894'];
+      for (let i = 0; i < 40; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.top = '-10px';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        c.style.width = (6 + Math.random() * 6) + 'px';
+        c.style.height = (6 + Math.random() * 6) + 'px';
+        c.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+        c.style.animationDelay = Math.random() * 0.5 + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+      }
+    }
+
+    // ============= SOUND =============
+    let audioCtx = null;
+    function playTapSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.type = 'sine';
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    // ============= 7-DAY CHART =============
+    function renderChart() {
+      const chart = document.getElementById('barChart');
+      chart.innerHTML = '';
+
+      const days = [];
+      const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const today = new Date();
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const count = state.history[key] || 0;
+        const label = dayLabels[d.getDay()];
+        const isToday = i === 0;
+        days.push({ key, count, label, isToday });
+      }
+
+      const maxCount = Math.max(...days.map(d => d.count), 1);
+
+      days.forEach((day, idx) => {
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+
+        const valEl = document.createElement('div');
+        valEl.className = 'bar-value';
+        valEl.textContent = day.count > 0 ? day.count : '';
+
+        const bar = document.createElement('div');
+        bar.className = 'bar' + (day.isToday ? ' today' : '');
+        const heightPct = day.count > 0 ? Math.max(8, (day.count / maxCount) * 100) : 3;
+        bar.style.height = '0%';
+
+        const dayEl = document.createElement('div');
+        dayEl.className = 'bar-day' + (day.isToday ? ' today' : '');
+        dayEl.textContent = day.isToday ? 'Today' : day.label;
+
+        col.appendChild(valEl);
+        col.appendChild(bar);
+        col.appendChild(dayEl);
+        chart.appendChild(col);
+
+        // Animate bars in
+        setTimeout(() => {
+          bar.style.height = heightPct + '%';
+        }, 100 + idx * 80);
+      });
+    }
+
+    // ============= TOAST =============
+    let toastTimeout = null;
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      document.getElementById('toastMsg').textContent = msg;
+      container.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        container.classList.remove('show');
+      }, 2500);
+    }
+
+    // ============= RESET =============
+    function resetToday() {
+      if (!confirm('Reset today\'s reel count to 0?')) return;
+      state.todayCount = 0;
+      saveState();
+      updateUI();
+      renderChart();
+      showToast('🔄 Today\'s count reset!');
+    }
+
+    function clearAllData() {
+      if (!confirm('Clear ALL history and data? This cannot be undone.')) return;
+      state.history = {};
+      state.todayCount = 0;
+      state.autoRunning = false;
+      stopAuto();
+      localStorage.removeItem(STORAGE_KEYS.history);
+      localStorage.removeItem(STORAGE_KEYS.todayDate);
+      saveState();
+      updateUI();
+      renderChart();
+      updateTapButton();
+      showToast('🗑️ All data cleared!');
+    }
+
+    // ============= PARTICLES =============
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = 4 + Math.random() * 8;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (10 + Math.random() * 20) + 's';
+        p.style.animationDelay = Math.random() * 15 + 's';
+        p.style.background = `rgba(${Math.random()>0.5?'233,69,96':'196,77,255'}, ${0.08 + Math.random() * 0.12})`;
+        container.appendChild(p);
+      }
+    }
+
+    // ============= PWA INSTALL =============
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      document.getElementById('installBar').classList.add('show');
+    });
+
+    function installApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(result => {
+          document.getElementById('installBar').classList.remove('show');
+          deferredInstallPrompt = null;
+          if (result.outcome === 'accepted') {
+            showToast('🎉 App installed!');
+          }
+        });
+      }
+    }
+
+    function dismissInstall() {
+      document.getElementById('installBar').classList.remove('show');
+    }
+
+    // ============= VISIBILITY CHANGE =============
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        const today = getToday();
+        const savedDate = localStorage.getItem(STORAGE_KEYS.todayDate);
+        if (savedDate !== today) {
+          state.todayCount = 0;
+          state.history[today] = 0;
+          localStorage.setItem(STORAGE_KEYS.todayDate, today);
+          saveState();
+          updateUI();
+          renderChart();
+          showToast('🌅 New day! Counter reset.');
+        }
+      }
+    });
+
+    // ============= SERVICE WORKER =============
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

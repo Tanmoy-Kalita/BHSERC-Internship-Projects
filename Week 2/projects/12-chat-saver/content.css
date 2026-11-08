@@ -1,0 +1,147 @@
+/* Chat Saver - Content Styles */
+.cs-save-btn {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 20px !important;
+  cursor: pointer !important;
+  z-index: 2147483640 !important;
+  transition: all 0.2s !important;
+  opacity: 0 !important;
+  transform: translateY(20px) !important;
+}
+.cs-save-btn.show { opacity: 1 !important; transform: translateY(0) !important; }
+.cs-save-btn:hover { transform: scale(1.1) !important; box-shadow: 0 6px 28px rgba(5, 150, 105, 0.5) !important; }
+.cs-save-btn.saving { background: #f59e0b !important; animation: cs-pulse 1s infinite !important; }
+@keyframes cs-pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4); } 50% { box-shadow: 0 4px 30px rgba(245, 158, 11, 0.6); } }
+
+.cs-toast {
+  position: fixed !important;
+  bottom: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(100px) !important;
+  background: #1f2937 !important;
+  color: white !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 13px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  opacity: 0 !important;
+  transition: all 0.3s !important;
+}
+.cs-toast.show { transform: translateX(-50%) translateY(0) !important; opacity: 1 !important; }
+.cs-toast.success { background: #059669 !important; }
+.cs-toast.error { background: #dc2626 !important; }
+.cs-toast button { background: none !important; border: none !important; color: white !important; font-size: 18px !important; cursor: pointer !important; opacity: 0.7 !important; }
+
+.cs-extract-preview {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  width: 90% !important;
+  max-width: 600px !important;
+  max-height: 85vh !important;
+  background: white !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3) !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  display: none !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: cs-popIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+@keyframes cs-popIn { to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+.cs-extract-preview.show { display: flex !important; }
+.cs-extract-preview.dark { background: #1f1f1f !important; color: #eee !important; }
+
+.cs-preview-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #fafafa !important;
+}
+.cs-extract-preview.dark .cs-preview-header { background: #2a2a2a !important; border-color: #333 !important; }
+.cs-preview-title { font-weight: 600 !important; font-size: 16px !important; display: flex !important; align-items: center !important; gap: 8px !important; }
+.cs-preview-platform { font-size: 12px !important; background: #2563eb !important; color: white !important; padding: 2px 8px !important; border-radius: 10px !important; }
+.cs-preview-close { background: none !important; border: none !important; font-size: 24px !important; cursor: pointer !important; color: #666 !important; padding: 4px 8px !important; line-height: 1 !important; }
+.cs-preview-close:hover { color: #333 !important; }
+
+.cs-preview-body { flex: 1 !important; overflow-y: auto !important; padding: 20px !important; }
+.cs-conversation-meta { display: flex !important; gap: 16px !important; margin-bottom: 16px !important; flex-wrap: wrap !important; font-size: 13px !important; color: #6b7280 !important; }
+.cs-meta-item { display: flex !important; align-items: center !important; gap: 6px !important; }
+
+.cs-message-list { max-height: 400px !important; overflow-y: auto !important; }
+.cs-message {
+  padding: 12px !important;
+  margin-bottom: 12px !important;
+  border-radius: 10px !important;
+  animation: cs-slideIn 0.2s !important;
+}
+@keyframes cs-slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.cs-message.user { background: #eff6ff !important; border-left: 3px solid #2563eb !important; }
+.cs-message.assistant { background: #f3f4f6 !important; border-left: 3px solid #059669 !important; }
+.cs-message.system { background: #fef3c7 !important; border-left: 3px solid #f59e0b !important; }
+.cs-extract-preview.dark .cs-message.user { background: #1e3a5f !important; }
+.cs-extract-preview.dark .cs-message.assistant { background: #2a2a2a !important; }
+.cs-extract-preview.dark .cs-message.system { background: #3d341a !important; }
+
+.cs-message-header { display: flex !important; align-items: center !important; gap: 8px !important; margin-bottom: 8px !important; font-size: 12px !important; }
+.cs-message-role { font-weight: 600 !important; text-transform: capitalize !important; }
+.cs-message-role.user { color: #2563eb !important; }
+.cs-message-role.assistant { color: #059669 !important; }
+.cs-message-role.system { color: #f59e0b !important; }
+.cs-message-time { color: #9ca3af !important; font-size: 11px !important; }
+.cs-message-content { font-size: 13px !important; line-height: 1.6 !important; white-space: pre-wrap !important; word-wrap: break-word !important; }
+.cs-message-content code { background: #e5e7eb !important; padding: 2px 6px !important; border-radius: 4px !important; font-family: monospace !important; font-size: 12px !important; }
+.cs-extract-preview.dark .cs-message-content code { background: #374151 !important; }
+
+.cs-preview-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  border-top: 1px solid #e5e7eb !important;
+  background: #fafafa !important;
+}
+.cs-extract-preview.dark .cs-preview-footer { background: #2a2a2a !important; border-color: #333 !important; }
+
+.cs-btn {
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.cs-btn-primary { background: #059669 !important; color: white !important; }
+.cs-btn-primary:hover { background: #047857 !important; }
+.cs-btn-secondary { background: #f3f4f6 !important; color: #374151 !important; }
+.cs-extract-preview.dark .cs-btn-secondary { background: #374151 !important; color: #eee !important; }
+.cs-btn-secondary:hover { background: #e5e7eb !important; }
+.cs-extract-preview.dark .cs-btn-secondary:hover { background: #4b5563 !important; }
+
+/* Highlight for detected messages */
+.cs-highlight { outline: 2px solid #059669 !important; outline-offset: 2px !important; border-radius: 4px !important; }

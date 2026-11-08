@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Same Page New Design",
+  "version": "1.0.0",
+  "description": "Generate design variations for web pages. Transform the same content into different visual styles, layouts, and color schemes - a design variation generator for web pages.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Same Page New Design"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

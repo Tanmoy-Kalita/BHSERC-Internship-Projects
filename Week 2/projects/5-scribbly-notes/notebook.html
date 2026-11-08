@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scribbly Notes - Type, get hand-drawn pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fffaf0;
+        }
+        .notebook-page {
+            width: 21cm;
+            height: 29.7cm;
+            margin: 0 auto 20px;
+            padding: 2cm 2.5cm;
+            background: #ffffff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlu7m+ZgAABCx0SERACAAhMgBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAzY+5YAAMA+1dEAAAAGY0lEQVQY02NstQoayhmGHXaIYCBgiDGCLkEhYMqwS7EFgybDZu6BthS2gTHwHxLSR6qoj4oQ4E6TgS4oKIiD6LiILBCH3YATQF5Dx9j4aG0jzGQAAAABJRU5ErkJggg=') repeat;
+            background-size: auto;
+        }
+        .notebook-page.lined {
+            background-image:
+                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 5mm 5mm;
+        }
+        .note-container {
+            min-height: 100px;
+        }
+        .text-input {
+            width: 100%;
+            height: 100px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        .control-btn {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scribbly Notes</h1>
+    <p>Type plain notes and get pretty hand-drawn notebook pages</p>
+
+    <div class="controls">
+        <select id="paper-style">
+            <option value="lined">Lined Paper (Wide Ruled)</option>
+            <option value="college">College Ruled</option>
+        </select>
+        <select id="ink-color">
+            <option value="blue">Blue Ink</option>
+            <option value="black">Black Ink</option>
+            <option value="red">Red Ink</option>
+        </select>
+        <select id="handwriting-style">
+            <option value="style1">Style 1 - Normal</option>
+            <option value="style2">Style 2 - Slanted</option>
+            <option value="style3">Style 3 - Rounded</option>
+        </select>
+    </div>
+
+    <textarea class="text-input" id="notes" rows="4" placeholder="Type your notes here...">Ohm's law: V = IR. Current rises with voltage.</textarea>
+
+    <div class="note-container" id="preview">
+        <!-- Notebook pages will be generated here -->
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="saveImage()">Save as Image</button>
+        <button class="control-btn" onclick="savePDF()">Save as PDF</button>
+    </div>
+
+    <script>
+        // Simple handwriting style simulation
+        // In a full implementation, this would use actual handwriting fonts
+        const styles = {
+            style1: { slant: 0, sizeVariation: 0.95, positionVariation: 0.95 },
+            style2: { slant: 12, sizeVariation: 1.05, positionVariation: 1.02 },
+            style3: { slant: -6, sizeVariation: 1.0, positionVariation: 0.98 }
+        };
+
+        const inkColors = {
+            blue: '#0000ff',
+            black: '#000000',
+            red: '#ff0000'
+        };
+
+        let pageCount = 1;
+
+        // Convert typed text to "handwritten" display
+        function renderPage() {
+            const notes = document.getElementById('notes').value;
+            const preview = document.getElementById('preview');
+            const paperStyle = document.getElementById('paper-style').value;
+            const inkColor = document.getElementById('ink-color').value;
+            const handStyle = styles[document.getElementById('handwriting-style').value];
+
+            preview.innerHTML = '';
+
+            // Split into lines and create pages
+            const lines = notes.split('\n');
+            let currentPageLines = [];
+            let pageNum = 0;
+
+            // Add first page
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'notebook-page lined';
+            preview.appendChild(pageDiv);
+
+            lines.forEach((line, index) => {
+                // Check if adding this line would overflow the page
+                if (currentPageLines.length >= 50) { // Approximate line limit per page
+                    // Save current page and start new one
+                    pageNum++;
+                    const newPageDiv = document.createElement('div');
+                    newPageDiv.className = 'notebook-page lined';
+                    preview.appendChild(newPageDiv);
+                    currentPageLines = [];
+                }
+
+                // Create a span for each line with handwriting simulation
+                const span = document.createElement('span');
+                span.style.color = inkColor;
+                span.style.fontFamily = `'Segoe UI', sans-serif`;
+                span.style.fontSize = `${16 * handStyle.sizeVariation}px`;
+
+                // Apply slight slant transformation for "handwriting" effect
+                if (handStyle.slant !== 0) {
+                    span.style.transform = `rotate(${handStyle.slant}deg)`;
+                    span.style.transformOrigin = `0 100%`;
+                }
+
+                span.textContent = line;
+                span.className = 'handwritten-line';
+                pageDiv.appendChild(span);
+
+                currentPageLines.push(line);
+            });
+        }
+
+        // Live preview update
+        document.getElementById('notes').addEventListener('input', renderPage);
+        document.getElementById('paper-style').addEventListener('change', renderPage);
+        document.getElementById('ink-color').addEventListener('change', renderPage);
+        document.getElementById('handwriting-style').addEventListener('change', renderPage);
+
+        // Initial render
+        renderPage();
+
+        // Save as PNG image
+        function saveImage() {
+            const canvas = document.createElement('canvas');
+            const preview = document.getElementById('preview');
+
+            // Set canvas size to match notebook page
+            canvas.width = 21 * 96 / 2.54; // A4 width in pixels at 96dpi
+            canvas.height = 29.7 * 96 / 2.54; // A4 height in pixels at 96dpi
+
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Copy the preview content
+            ctx.drawImage(preview, 0, 0);
+
+            // Download
+            const link = document.createElement('a');
+            link.download = `scribbly-notes-${pageCount}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+
+            pageCount = (pageCount % 3) + 1; // Cycle 1-3
+        }
+
+        // Save as PDF (simple approach using download-link)
+        function savePDF() {
+            // This is a simplified version - real PDF generation would need a library
+            const { jsPDF } = window.jspdf || {};
+            if (typeof jsPDF === 'undefined') {
+                alert("jsPDF not loaded - would need to include library for real PDF export");
+                return;
+            }
+
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const notes = document.getElementById('notes').value;
+            const lines = notes.split('\n');
+
+            lines.forEach((line, i) => {
+                pdf.text(2, (i + 1) * 5 + 2, line);
+            });
+
+            pdf.save(`scribbly-notes-${pageCount}.pdf`);
+        }
+    </script>
+</body>
+</html>

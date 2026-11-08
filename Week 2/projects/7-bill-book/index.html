@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a5c3c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Bill Book - Offline billing app with UPI QR codes">
+  <title>Bill Book</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1a5c3c 0%, #2d8a4f 100%);
+      color: white;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(26, 92, 60, 0.3);
+    }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .header-top h1 { font-size: 1.3rem; font-weight: 700; }
+    .header-actions { display: flex; gap: 0.5rem; }
+    .icon-btn {
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.3); }
+    .shop-info { display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.85rem; opacity: 0.9; }
+    .shop-name { font-weight: 600; font-size: 1rem; }
+    .shop-gst { font-size: 0.75rem; opacity: 0.8; }
+    .bill-meta { display: flex; gap: 1rem; font-size: 0.75rem; opacity: 0.85; }
+    .bill-meta span { background: rgba(255,255,255,0.15); padding: 0.2rem 0.6rem; border-radius: 10px; }
+
+    main { flex: 1; padding: 1rem; padding-bottom: 100px; }
+
+    /* Tabs */
+    .tabs { display: flex; background: white; border-radius: 16px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .tab {
+      flex: 1; padding: 0.75rem; border: none; background: transparent;
+      font-size: 0.9rem; font-weight: 600; color: #6b7280;
+      cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .tab.active { color: #1a5c3c; background: rgba(26, 92, 60, 0.05); }
+    .tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #1a5c3c; border-radius: 3px 3px 0 0; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards */
+    .card {
+      background: white; border-radius: 16px; padding: 1rem; margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .card-title { font-size: 1rem; font-weight: 700; color: #1f2937; }
+
+    /* Forms */
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 10px;
+      font-size: 0.95rem; font-family: inherit; background: #fafafa;
+      transition: all 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none; border-color: #1a5c3c; background: white; box-shadow: 0 0 0 3px rgba(26, 92, 60, 0.1);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-textarea { min-height: 80px; resize: vertical; }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: all 0.2s; width: 100%;
+    }
+    .btn-primary { background: linear-gradient(135deg, #1a5c3c 0%, #2d8a4f 100%); color: white; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26, 92, 60, 0.3); }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .btn-danger { background: #fef2f2; color: #dc2626; }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-icon { padding: 0.5rem; width: auto; }
+    .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+    /* Bill Items */
+    .bill-items { margin-top: 1rem; }
+    .item-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 0.5rem;
+      align-items: center; padding: 0.75rem; background: #fafafa; border-radius: 10px; margin-bottom: 0.5rem;
+    }
+    .item-row.header { font-weight: 600; color: #6b7280; font-size: 0.8rem; background: transparent; padding-bottom: 0.25rem; }
+    .item-input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; }
+    .item-input.qty { width: 70px; text-align: center; }
+    .item-input.rate { width: 80px; text-align: right; }
+    .item-total { text-align: right; font-weight: 600; color: #1a5c3c; font-size: 0.95rem; }
+    .item-remove { background: none; border: none; color: #ef4444; font-size: 1.1rem; cursor: pointer; padding: 0.25rem; }
+
+    /* Totals */
+    .totals { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
+    .total-row { display: flex; justify-content: space-between; font-size: 0.95rem; }
+    .total-row.grand { font-size: 1.2rem; font-weight: 700; color: #1a5c3c; padding-top: 0.5rem; border-top: 1px solid #e5e7eb; }
+    .gst-breakdown { font-size: 0.8rem; color: #6b7280; background: #f0fdf4; padding: 0.75rem; border-radius: 10px; }
+    .gst-row { display: flex; justify-content: space-between; margin: 0.25rem 0; }
+
+    /* Customer/Search */
+    .search-results { max-height: 200px; overflow-y: auto; }
+    .customer-item {
+      padding: 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.2s;
+      border: 1px solid transparent; margin-bottom: 0.5rem;
+    }
+    .customer-item:hover { background: #f0fdf4; border-color: #bbf7d0; }
+    .customer-name { font-weight: 600; color: #1f2937; }
+    .customer-details { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
+
+    /* Bill List */
+    .bill-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .bill-card {
+      background: white; border-radius: 12px; padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .bill-info { display: flex; flex-direction: column; gap: 0.25rem; }
+    .bill-number { font-weight: 700; color: #1a5c3c; }
+    .bill-customer { font-size: 0.85rem; color: #374151; }
+    .bill-meta-info { font-size: 0.75rem; color: #9ca3af; display: flex; gap: 1rem; }
+    .bill-amount { font-size: 1.1rem; font-weight: 700; color: #1f2937; }
+    .bill-status { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 10px; font-weight: 600; }
+    .status-paid { background: #dcfce7; color: #166534; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .bill-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+
+    /* QR Modal */
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
+      z-index: 1000; padding: 1rem;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white; border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 360px;
+      max-height: 90vh; overflow-y: auto; position: relative;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .modal-title { font-size: 1.1rem; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; color: #9ca3af; cursor: pointer; }
+    .qr-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .qr-code { background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .qr-info { text-align: center; }
+    .qr-amount { font-size: 1.5rem; font-weight: 700; color: #1a5c3c; }
+    .qr-upi { font-size: 0.8rem; color: #6b7280; word-break: break-all; margin: 0.5rem 0; }
+    .qr-actions { display: flex; gap: 0.5rem; width: 100%; }
+
+    /* Settings */
+    .setting-group { margin-bottom: 1.5rem; }
+    .setting-label { font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block; }
+    .setting-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 10px; font-size: 0.95rem; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #1f2937; color: white; padding: 1rem 1.5rem; border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transition: all 0.3s; z-index: 2000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #1a5c3c; }
+    .toast.error { background: #dc2626; }
+
+    /* Print styles */
+    @media print {
+      header, .tabs, .btn, .card-header button, .item-remove, .search-results, .bill-actions { display: none !important; }
+      .app { background: white; }
+      .card { box-shadow: none; border: 1px solid #e5e7eb; }
+      .panel { display: block !important; }
+      main { padding: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .item-row { grid-template-columns: 1fr; gap: 0.5rem; }
+      .item-row.header { display: none; }
+      .item-row > * { width: 100%; }
+      .item-total { text-align: left; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-top">
+        <h1>📒 Bill Book</h1>
+        <div class="header-actions">
+          <button class="icon-btn" onclick="openSettings()" aria-label="Settings">⚙️</button>
+          <button class="icon-btn" onclick="exportData()" aria-label="Export Data">📤</button>
+          <button class="icon-btn" onclick="importData()" aria-label="Import Data">📥</button>
+        </div>
+      </div>
+      <div class="shop-info">
+        <div>
+          <div class="shop-name" id="shopName">My Shop</div>
+          <div class="shop-gst" id="shopGST">GSTIN: Not configured</div>
+        </div>
+        <div class="bill-meta">
+          <span id="billNumber">Bill #001</span>
+          <span id="billDate"></span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="tabs">
+        <button class="tab active" data-tab="newBill" onclick="switchTab('newBill')">New Bill</button>
+        <button class="tab" data-tab="customers" onclick="switchTab('customers')">Customers</button>
+        <button class="tab" data-tab="history" onclick="switchTab('history')">History</button>
+      </div>
+
+      <!-- New Bill Panel -->
+      <div class="panel active" id="panel-newBill">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Customer Details</h3>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Search / Select Customer</label>
+            <input type="text" class="form-input" id="customerSearch" placeholder="Type name or phone to search..." oninput="searchCustomers()">
+            <div class="search-results" id="customerResults"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-input" id="customerName" placeholder="Customer name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" id="customerPhone" placeholder="Phone number">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <textarea class="form-textarea" id="customerAddress" placeholder="Address (optional)"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">GSTIN</label>
+              <input type="text" class="form-input" id="customerGSTIN" placeholder="GSTIN (optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <select class="form-select" id="customerState">
+                <option value="">Select State</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="saveCustomer()">💾 Save Customer</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Bill Items</h3>
+            <button class="btn btn-secondary btn-sm" onclick="addItem()">➕ Add Item</button>
+          </div>
+          <div class="bill-items">
+            <div class="item-row header">
+              <span>Item / Description</span>
+              <span>Qty</span>
+              <span>Rate</span>
+              <span>GST %</span>
+              <span>Total</span>
+            </div>
+            <div id="itemsContainer"></div>
+          </div>
+          <div class="totals" id="totalsContainer"></div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-primary" onclick="generateBill()">🧾 Generate Bill</button>
+          <button class="btn btn-secondary" onclick="printBill()">🖨️ Print / Save PDF</button>
+          <button class="btn btn-secondary" onclick="shareBill()">📤 Share</button>
+        </div>
+      </div>
+
+      <!-- Customers Panel -->
+      <div class="panel" id="panel-customers">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">All Customers</h3>
+            <button class="btn btn-secondary btn-sm" onclick="showAddCustomer()">➕ Add Customer</button>
+          </div>
+          <div id="customersList"></div>
+        </div>
+      </div>
+
+      <!-- History Panel -->
+      <div class="panel" id="panel-history">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Bill History</h3>
+          </div>
+          <div class="bill-list" id="historyList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Settings</h3>
+        <button class="modal-close" onclick="closeModal('settingsModal')">×</button>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Shop Name</label>
+        <input type="text" class="setting-input" id="setShopName" placeholder="Your shop name">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Shop Address</label>
+        <textarea class="setting-input" id="setShopAddress" rows="2" placeholder="Shop address"></textarea>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">GSTIN</label>
+        <input type="text class="setting-input" id="setShopGSTIN" placeholder="29AAAAA0000A1Z5">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Phone</label>
+        <input type="tel" class="setting-input" id="setShopPhone" placeholder="+91 98765 43210">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">UPI ID (for QR payments)</label>
+        <input type="text" class="setting-input" id="setUPIId" placeholder="shop@upi">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Default GST Rate</label>
+        <select class="setting-input" id="setDefaultGST">
+          <option value="0">0% (Exempt)</option>
+          <option value="5">5%</option>
+          <option value="12">12%</option>
+          <option value="18" selected>18%</option>
+          <option value="28">28%</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div class="modal" id="addCustomerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Customer</h3>
+        <button class="modal-close" onclick="closeModal('addCustomerModal')">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-input" id="newCustName" placeholder="Customer name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone *</label>
+        <input type="tel" class="form-input" id="newCustPhone" placeholder="Phone number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <textarea class="form-textarea" id="newCustAddress" placeholder="Address"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">GSTIN</label>
+          <input type="text" class="form-input" id="newCustGSTIN" placeholder="GSTIN">
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <select class="form-select" id="newCustState">
+            <option value="">Select State</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="createCustomer()">Add Customer</button>
+    </div>
+  </div>
+
+  <!-- QR Payment Modal -->
+  <div class="modal" id="qrModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">UPI Payment</h3>
+        <button class="modal-close" onclick="closeModal('qrModal')">×</button>
+      </div>
+      <div class="qr-container">
+        <div class="qr-code" id="qrCodeContainer"></div>
+        <div class="qr-info">
+          <div class="qr-amount" id="qrAmount">₹0.00</div>
+          <div class="qr-upi" id="qrUpiId">upi://pay?pa=...&am=0</div>
+        </div>
+        <div class="qr-actions">
+          <button class="btn btn-secondary" onclick="downloadQR()">📥 Download QR</button>
+          <button class="btn btn-primary" onclick="printQR()">🖨️ Print QR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- QR Code Library -->
+  <script src="qrcode.min.js"></script>
+
+  <script>
+    // State
+    let settings = JSON.parse(localStorage.getItem('billBookSettings') || '{"shopName":"My Shop","shopAddress":"","shopGSTIN":"","shopPhone":"","upiId":"","defaultGST":18}');
+    let customers = JSON.parse(localStorage.getItem('billBookCustomers') || '[]');
+    let bills = JSON.parse(localStorage.getItem('billBookBills') || '[]');
+    let billItems = [];
+    let billCounter = parseInt(localStorage.getItem('billBookCounter') || '1');
+    let currentCustomer = null;
+    let currentBill = null;
+    let qrCodeInstance = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      applySettings();
+      renderCustomers();
+      renderHistory();
+      updateBillMeta();
+      addItem(); // Start with one empty item
+      setTodayDate();
+    });
+
+    function applySettings() {
+      document.getElementById('shopName').textContent = settings.shopName || 'My Shop';
+      document.getElementById('shopGST').textContent = settings.shopGSTIN ? `GSTIN: ${settings.shopGSTIN}` : 'GSTIN: Not configured';
+      document.getElementById('setShopName').value = settings.shopName || '';
+      document.getElementById('setShopAddress').value = settings.shopAddress || '';
+      document.getElementById('setShopGSTIN').value = settings.shopGSTIN || '';
+      document.getElementById('setShopPhone').value = settings.shopPhone || '';
+      document.getElementById('setUPIId').value = settings.upiId || '';
+      document.getElementById('setDefaultGST').value = settings.defaultGST || 18;
+    }
+
+    function saveSettings() {
+      settings = {
+        shopName: document.getElementById('setShopName').value,
+        shopAddress: document.getElementById('setShopAddress').value,
+        shopGSTIN: document.getElementById('setShopGSTIN').value,
+        shopPhone: document.getElementById('setShopPhone').value,
+        upiId: document.getElementById('setUPIId').value,
+        defaultGST: parseInt(document.getElementById('setDefaultGST').value)
+      };
+      localStorage.setItem('billBookSettings', JSON.stringify(settings));
+      applySettings();
+      closeModal('settingsModal');
+      showToast('Settings saved!');
+    }
+
+    function setTodayDate() {
+      const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      document.getElementById('billDate').textContent = today;
+    }
+
+    function updateBillMeta() {
+      document.getElementById('billNumber').textContent = `Bill #${String(billCounter).padStart(3, '0')}`;
+      setTodayDate();
+    }
+
+    // Tab switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+      document.getElementById(`panel-${tabId}`).classList.add('active');
+    }
+
+    // Items management
+    function addItem(item = {}) {
+      const container = document.getElementById('itemsContainer');
+      const index = billItems.length;
+      billItems.push({ name: '', qty: 1, rate: 0, gst: settings.defaultGST, ...item });
+
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.dataset.index = index;
+      row.innerHTML = `
+        <input type="text" class="item-input" placeholder="Item name" value="${item.name || ''}" oninput="updateItem(${index}, 'name', this.value)">
+        <input type="number" class="item-input qty" min="1" step="1" value="${item.qty || 1}" oninput="updateItem(${index}, 'qty', parseFloat(this.value) || 1)">
+        <input type="number" class="item-input rate" min="0" step="0.01" value="${item.rate || 0}" oninput="updateItem(${index}, 'rate', parseFloat(this.value) || 0)">
+        <select class="item-input" style="width: 80px;" onchange="updateItem(${index}, 'gst', parseInt(this.value))">
+          <option value="0" ${item.gst === 0 ? 'selected' : ''}>0%</option>
+          <option value="5" ${item.gst === 5 ? 'selected' : ''}>5%</option>
+          <option value="12" ${item.gst === 12 ? 'selected' : ''}>12%</option>
+          <option value="18" ${item.gst === 18 ? 'selected' : ''}>18%</option>
+          <option value="28" ${item.gst === 28 ? 'selected' : ''}>28%</option>
+        </select>
+        <div class="item-total" id="itemTotal${index}">₹0.00</div>
+        <button class="item-remove" onclick="removeItem(${index})" aria-label="Remove item">×</button>
+      `;
+      container.appendChild(row);
+      calculateTotals();
+    }
+
+    function updateItem(index, field, value) {
+      if (billItems[index]) {
+        billItems[index][field] = value;
+        calculateTotals();
+      }
+    }
+
+    function removeItem(index) {
+      if (billItems.length <= 1) {
+        showToast('At least one item required', 'error');
+        return;
+      }
+      billItems.splice(index, 1);
+      renderItems();
+    }
+
+    function renderItems() {
+      const container = document.getElementById('itemsContainer');
+      container.innerHTML = '';
+      billItems.forEach((item, index) => addItem(item));
+    }
+
+    function calculateTotals() {
+      let subtotal = 0;
+      const gstTotals = { 0: 0, 5: 0, 12: 0, 18: 0, 28: 0 };
+
+      billItems.forEach((item, index) => {
+        const itemTotal = (item.qty || 0) * (item.rate || 0);
+        const gstAmount = itemTotal * (item.gst || 0) / 100;
+        const total = itemTotal + gstAmount;
+
+        subtotal += itemTotal;
+        gstTotals[item.gst || 0] += gstAmount;
+
+        document.getElementById(`itemTotal${index}`).textContent = `₹${total.toFixed(2)}`;
+      });
+
+      const totalGST = Object.values(gstTotals).reduce((a, b) => a + b, 0);
+      const grandTotal = subtotal + totalGST;
+
+      let gstHtml = '';
+      Object.entries(gstTotals).forEach(([rate, amount]) => {
+        if (amount > 0) {
+          gstHtml += `<div class="gst-row"><span>GST ${rate}%</span><span>₹${amount.toFixed(2)}</span></div>`;
+        }
+      });
+
+      document.getElementById('totalsContainer').innerHTML = `
+        <div class="total-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+        <div class="gst-breakdown">${gstHtml || '<div class="gst-row"><span>No GST</span><span>₹0.00</span></div>'}</div>
+        <div class="total-row"><span>Total GST</span><span>₹${totalGST.toFixed(2)}</span></div>
+        <div class="total-row grand"><span>Grand Total</span><span>₹${grandTotal.toFixed(2)}</span></div>
+      `;
+
+      return { subtotal, totalGST, grandTotal };
+    }
+
+    // Customer management
+    function searchCustomers() {
+      const query = document.getElementById('customerSearch').value.toLowerCase().trim();
+      const results = document.getElementById('customerResults');
+
+      if (!query) {
+        results.innerHTML = '';
+        return;
+      }
+
+      const matches = customers.filter(c =>
+        c.name.toLowerCase().includes(query) ||
+        c.phone.includes(query)
+      ).slice(0, 5);
+
+      if (matches.length === 0) {
+        results.innerHTML = '<div style="padding: 0.5rem; color: #9ca3af; font-size: 0.85rem;">No customers found</div>';
+        return;
+      }
+
+      results.innerHTML = matches.map(c => `
+        <div class="customer-item" onclick="selectCustomer('${c.id}')">
+          <div class="customer-name">${c.name}</div>
+          <div class="customer-details">${c.phone} ${c.gstin ? '• ' + c.gstin : ''} ${c.address ? '• ' + c.address.substring(0, 30) : ''}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectCustomer(id) {
+      const customer = customers.find(c => c.id === id);
+      if (!customer) return;
+
+      currentCustomer = customer;
+      document.getElementById('customerName').value = customer.name;
+      document.getElementById('customerPhone').value = customer.phone;
+      document.getElementById('customerAddress').value = customer.address || '';
+      document.getElementById('customerGSTIN').value = customer.gstin || '';
+      document.getElementById('customerState').value = customer.state || '';
+      document.getElementById('customerSearch').value = '';
+      document.getElementById('customerResults').innerHTML = '';
+    }
+
+    function saveCustomer() {
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+
+      if (!name || !phone) {
+        showToast('Name and phone are required', 'error');
+        return;
+      }
+
+      const existing = customers.findIndex(c => c.phone === phone);
+      const customer = {
+        id: existing >= 0 ? customers[existing].id : 'cust_' + Date.now(),
+        name, phone,
+        address: document.getElementById('customerAddress').value.trim(),
+        gstin: document.getElementById('customerGSTIN').value.trim().toUpperCase(),
+        state: document.getElementById('customerState').value
+      };
+
+      if (existing >= 0) {
+        customers[existing] = customer;
+      } else {
+        customers.unshift(customer);
+      }
+
+      localStorage.setItem('billBookCustomers', JSON.stringify(customers));
+      currentCustomer = customer;
+      renderCustomers();
+      searchCustomers();
+      showToast('Customer saved!');
+    }
+
+    function renderCustomers() {
+      const container = document.getElementById('customersList');
+      if (customers.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #9ca3af;">No customers yet. Tap "Add Customer" to start.</div>';
+        return;
+      }
+
+      container.innerHTML = customers.map(c => `
+        <div class="customer-item" onclick="selectCustomerForBill('${c.id}')">
+          <div class="customer-name">${c.name}</div>
+          <div class="customer-details">${c.phone} ${c.gstin ? '• ' + c.gstin : ''}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectCustomerForBill(id) {
+      selectCustomer(id);
+      switchTab('newBill');
+    }
+
+    function showAddCustomer() {
+      document.getElementById('newCustName').value = '';
+      document.getElementById('newCustPhone').value = '';
+      document.getElementById('newCustAddress').value = '';
+      document.getElementById('newCustGSTIN').value = '';
+      document.getElementById('newCustState').value = '';
+      document.getElementById('addCustomerModal').classList.add('active');
+    }
+
+    function createCustomer() {
+      const name = document.getElementById('newCustName').value.trim();
+      const phone = document.getElementById('newCustPhone').value.trim();
+
+      if (!name || !phone) {
+        showToast('Name and phone are required', 'error');
+        return;
+      }
+
+      const customer = {
+        id: 'cust_' + Date.now(),
+        name, phone,
+        address: document.getElementById('newCustAddress').value.trim(),
+        gstin: document.getElementById('newCustGSTIN').value.trim().toUpperCase(),
+        state: document.getElementById('newCustState').value
+      };
+
+      customers.unshift(customer);
+      localStorage.setItem('billBookCustomers', JSON.stringify(customers));
+      renderCustomers();
+      closeModal('addCustomerModal');
+      showToast('Customer added!');
+    }
+
+    // Bill generation
+    function generateBill() {
+      if (billItems.length === 0 || billItems.every(i => !i.name.trim())) {
+        showToast('Add at least one item', 'error');
+        return;
+      }
+
+      const totals = calculateTotals();
+      const customer = currentCustomer || {
+        name: document.getElementById('customerName').value.trim() || 'Walk-in Customer',
+        phone: document.getElementById('customerPhone').value.trim(),
+        address: document.getElementById('customerAddress').value.trim(),
+        gstin: document.getElementById('customerGSTIN').value.trim(),
+        state: document.getElementById('customerState').value
+      };
+
+      const bill = {
+        id: 'bill_' + Date.now(),
+        number: billCounter,
+        date: new Date().toISOString(),
+        customer,
+        items: billItems.map(i => ({...i})),
+        subtotal: totals.subtotal,
+        totalGST: totals.totalGST,
+        grandTotal: totals.grandTotal,
+        status: 'pending'
+      };
+
+      bills.unshift(bill);
+      billCounter++;
+      localStorage.setItem('billBookBills', JSON.stringify(bills));
+      localStorage.setItem('billBookCounter', billCounter);
+
+      currentBill = bill;
+      updateBillMeta();
+      renderHistory();
+      showBillQR(bill);
+      showToast('Bill generated!');
+    }
+
+    function showBillQR(bill) {
+      if (!settings.upiId) {
+        showToast('Set UPI ID in settings to enable QR payments', 'error');
+        return;
+      }
+
+      const upiString = `upi://pay?pa=${settings.upiId}&pn=${encodeURIComponent(settings.shopName)}&am=${bill.grandTotal.toFixed(2)}&cu=INR&tn=Bill%20%23${bill.number}`;
+
+      document.getElementById('qrAmount').textContent = `₹${bill.grandTotal.toFixed(2)}`;
+      document.getElementById('qrUpiId').textContent = upiString;
+
+      const container = document.getElementById('qrCodeContainer');
+      container.innerHTML = '';
+
+      if (window.QRCode) {
+        qrCodeInstance = new QRCode(container, {
+          text: upiString,
+          width: 200,
+          height: 200,
+          colorDark: '#1a5c3c',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+
+      document.getElementById('qrModal').classList.add('active');
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrCodeContainer canvas');
+      if (canvas) {
+        const link = document.createElement('a');
+        link.download = `upi-qr-bill-${currentBill?.number || 'payment'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('QR downloaded!');
+      }
+    }
+
+    function printQR() {
+      const canvas = document.querySelector('#qrCodeContainer canvas');
+      if (canvas) {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+          <html><head><title>UPI QR Code</title>
+          <style>body{display:flex;flex-direction:column;align-items:center;padding:2rem;font-family:sans-serif;}
+          img{max-width:300px;} h3{color:#1a5c3c;} .info{margin:1rem 0;text-align:center;}
+          @media print { .no-print { display: none; } }</style></head>
+          <body>
+            <h3>${settings.shopName}</h3>
+            <img src="${canvas.toDataURL('image/png')}" alt="UPI QR Code">
+            <div class="info">
+              <div><strong>Amount: ₹${currentBill?.grandTotal.toFixed(2)}</strong></div>
+              <div>UPI: ${settings.upiId}</div>
+              <div>Bill #${currentBill?.number}</div>
+            </div>
+            <button class="no-print" onclick="window.print()">Print</button>
+          </body></html>
+        `);
+        printWindow.document.close();
+      }
+    }
+
+    function printBill() {
+      if (!currentBill) {
+        showToast('Generate a bill first', 'error');
+        return;
+      }
+      window.print();
+    }
+
+    function shareBill() {
+      if (!currentBill) {
+        showToast('Generate a bill first', 'error');
+        return;
+      }
+
+      const text = `Bill #${currentBill.number}\n${settings.shopName}\n${settings.shopAddress}\n${settings.shopPhone}\n\nCustomer: ${currentBill.customer.name}\nPhone: ${currentBill.customer.phone}\n\nAmount: ₹${currentBill.grandTotal.toFixed(2)}\n\nPay via UPI: ${settings.upiId}`;
+
+      if (navigator.share) {
+        navigator.share({ title: `Bill #${currentBill.number}`, text }).catch(() => copyToClipboard(text));
+      } else {
+        copyToClipboard(text);
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!')).catch(() => showToast('Failed to copy', 'error'));
+    }
+
+    // History
+    function renderHistory() {
+      const container = document.getElementById('historyList');
+      if (bills.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #9ca3af;">No bills yet</div>';
+        return;
+      }
+
+      container.innerHTML = bills.map(bill => `
+        <div class="bill-card">
+          <div class="bill-info">
+            <span class="bill-number">Bill #${String(bill.number).padStart(3, '0')}</span>
+            <span class="bill-customer">${bill.customer.name} • ${bill.customer.phone}</span>
+            <div class="bill-meta-info">
+              <span>${new Date(bill.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+              <span>${bill.items.length} items</span>
+            </div>
+            <div class="bill-actions">
+              <button class="btn btn-secondary btn-sm" onclick="viewBill('${bill.id}')">View</button>
+              <button class="btn btn-secondary btn-sm" onclick="showBillQR(bills.find(b => b.id === '${bill.id}'))">QR</button>
+              <button class="btn btn-secondary btn-sm" onclick="toggleBillStatus('${bill.id}')">${bill.status === 'paid' ? 'Mark Pending' : 'Mark Paid'}</button>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div class="bill-amount">₹${bill.grandTotal.toFixed(2)}</div>
+            <span class="bill-status status-${bill.status}">${bill.status === 'paid' ? '✓ Paid' : '⏳ Pending'}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function viewBill(id) {
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+      currentBill = bill;
+      switchTab('newBill');
+      loadBillIntoForm(bill);
+    }
+
+    function loadBillIntoForm(bill) {
+      currentCustomer = bill.customer;
+      document.getElementById('customerName').value = bill.customer.name;
+      document.getElementById('customerPhone').value = bill.customer.phone;
+      document.getElementById('customerAddress').value = bill.customer.address || '';
+      document.getElementById('customerGSTIN').value = bill.customer.gstin || '';
+      document.getElementById('customerState').value = bill.customer.state || '';
+
+      billItems = bill.items.map(i => ({...i}));
+      renderItems();
+    }
+
+    function toggleBillStatus(id) {
+      const bill = bills.find(b => b.id === id);
+      if (bill) {
+        bill.status = bill.status === 'paid' ? 'pending' : 'paid';
+        localStorage.setItem('billBookBills', JSON.stringify(bills));
+        renderHistory();
+      }
+    }
+
+    // Data export/import
+    function exportData() {
+      const data = { settings, customers, bills, billCounter };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `billbook-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data exported!');
+    }
+
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.settings) { settings = data.settings; localStorage.setItem('billBookSettings', JSON.stringify(settings)); }
+            if (data.customers) { customers = data.customers; localStorage.setItem('billBookCustomers', JSON.stringify(customers)); }
+            if (data.bills) { bills = data.bills; localStorage.setItem('billBookBills', JSON.stringify(bills)); }
+            if (data.billCounter) { billCounter = data.billCounter; localStorage.setItem('billBookCounter', billCounter); }
+            applySettings();
+            renderCustomers();
+            renderHistory();
+            updateBillMeta();
+            showToast('Data imported!');
+          } catch (err) {
+            showToast('Invalid backup file', 'error');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    // Modals
+    function openSettings() {
+      document.getElementById('settingsModal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Close modals on outside click
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      });
+    });
+
+    // Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

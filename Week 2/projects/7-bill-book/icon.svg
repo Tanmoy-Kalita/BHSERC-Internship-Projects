@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect x="10" y="10" width="80" height="80" rx="16" fill="#1a5c3c"/>
+  <rect x="25" y="25" width="50" height="8" rx="4" fill="#ffffff"/>
+  <rect x="25" y="40" width="35" height="8" rx="4" fill="#ffffff" opacity="0.8"/>
+  <rect x="25" y="55" width="45" height="8" rx="4" fill="#ffffff" opacity="0.8"/>
+  <text x="50" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#facc15" text-anchor="middle">₹ UPI</text>
+</svg>

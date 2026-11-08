@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Goblin - Interactive Extension Simulator</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #064e3b;
+      color: #ecfdf5;
+    }
+    .main-view {
+      flex: 1;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .goblin-hero {
+      font-size: 5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .side-panel {
+      width: 420px;
+      height: 100%;
+      border-left: 1px solid rgba(255,255,255,0.2);
+      background: #022c22;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-view">
+    <div class="goblin-hero">👺</div>
+    <h1 style="font-size: 2.2rem; margin: 1rem 0 0.5rem 0;">Tab Goblin Active!</h1>
+    <p style="color: #a7f3d0; max-width: 500px; line-height: 1.5;">
+      The goblin sleeps inactive tabs so your laptop fan stops screaming, while never closing forms or losing your state. Use the side panel to manage ignored tabs, keep list, and saved sessions!
+    </p>
+  </div>
+
+  <div class="side-panel">
+    <iframe src="popup.html"></iframe>
+  </div>
+</body>
+</html>

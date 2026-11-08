@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Focus Board - Side Panel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #202124;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #065fd4 0%, #1a73e8 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-icon { font-size: 24px; }
+    .header-title { font-weight: 600; font-size: 16px; }
+    .header-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.3); }
+
+    .tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e8eaed;
+      flex-shrink: 0;
+    }
+    .tab {
+      flex: 1; padding: 12px; border: none; background: transparent;
+      font-size: 13px; font-weight: 500; color: #5f6368;
+      cursor: pointer; transition: all 0.15s; position: relative;
+    }
+    .tab.active { color: #065fd4; background: white; }
+    .tab.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 2px; background: #065fd4;
+    }
+    .tab-count { background: #065fd4; color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+
+    .panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    .panel.active { display: flex; }
+
+    /* Notes Panel */
+    .notes-toolbar {
+      display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid #e8eaed;
+      flex-wrap: wrap;
+    }
+    .notes-list { flex: 1; overflow-y: auto; padding: 12px; }
+    .note-item {
+      padding: 12px; margin-bottom: 8px;
+      background: #f8f9fa; border-radius: 8px;
+      border-left: 3px solid #065fd4;
+      position: relative; animation: slideIn 0.2s;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    .note-timestamp {
+      font-size: 11px; color: #065fd4; font-weight: 600; cursor: pointer;
+      margin-bottom: 4px; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .note-timestamp:hover { text-decoration: underline; }
+    .note-text { font-size: 13px; line-height: 1.5; word-wrap: break-word; }
+    .note-actions { display: flex; gap: 8px; margin-top: 8px; opacity: 0; transition: opacity 0.2s; }
+    .note-item:hover .note-actions { opacity: 1; }
+    .note-action { font-size: 11px; color: #5f6368; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+    .note-action:hover { background: #e8eaed; color: #202124; }
+
+    .notes-empty { text-align: center; padding: 40px 20px; color: #9aa0a6; font-size: 13px; }
+    .note-input-area { padding: 12px; border-top: 1px solid #e8eaed; display: flex; gap: 8px; flex-shrink: 0; }
+    .note-input { flex: 1; padding: 10px 12px; border: 1px solid #dadce0; border-radius: 8px; font-size: 13px; font-family: inherit; resize: none; min-height: 44px; max-height: 120px; }
+    .note-input:focus { outline: none; border-color: #065fd4; box-shadow: 0 0 0 2px rgba(6,95,212,0.2); }
+
+    /* Sessions Panel */
+    .sessions-list { flex: 1; overflow-y: auto; padding: 12px; }
+    .session-card {
+      background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 12px;
+      border: 1px solid #e8eaed;
+    }
+    .session-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .session-title { font-weight: 600; font-size: 14px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .session-date { font-size: 11px; color: #5f6368; white-space: nowrap; }
+    .session-meta { display: flex; gap: 16px; font-size: 12px; color: #5f6368; margin-bottom: 12px; }
+    .session-meta span { display: flex; align-items: center; gap: 4px; }
+    .session-actions { display: flex; gap: 8px; }
+    .session-btn {
+      padding: 6px 12px; border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 500; cursor: pointer;
+    }
+    .session-btn-primary { background: #065fd4; color: white; }
+    .session-btn-secondary { background: #f1f3f4; color: #333; }
+    .session-btn-danger { background: #fce8e6; color: #d93025; }
+
+    .sessions-empty { text-align: center; padding: 40px 20px; color: #9aa0a6; }
+
+    /* Stats Panel */
+    .stats-content { flex: 1; overflow-y: auto; padding: 20px; }
+    .stat-card {
+      background: #f8f9fa; border-radius: 12px; padding: 20px;
+      margin-bottom: 16px; text-align: center;
+    }
+    .stat-icon { font-size: 32px; margin-bottom: 8px; }
+    .stat-value { font-size: 36px; font-weight: 700; color: #065fd4; margin-bottom: 4px; }
+    .stat-label { font-size: 13px; color: #5f6368; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .progress-bar { height: 6px; background: #e8eaed; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; background: #065fd4; border-radius: 3px; transition: width 0.3s; }
+
+    /* Settings Panel */
+    .settings-content { flex: 1; overflow-y: auto; padding: 16px; }
+    .setting-group { margin-bottom: 24px; }
+    .setting-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #5f6368; margin-bottom: 12px; }
+    .setting-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f3f4; }
+    .setting-info { display: flex; flex-direction: column; gap: 2px; }
+    .setting-label { font-size: 14px; font-weight: 500; }
+    .setting-desc { font-size: 11px; color: #5f6368; }
+    .select { padding: 8px 12px; border: 1px solid #dadce0; border-radius: 6px; font-size: 13px; background: white; }
+
+    .danger-zone { border-top: 1px solid #fce8e6; padding-top: 16px; margin-top: 8px; }
+    .danger-btn { background: #fce8e6; color: #d93025; }
+    .danger-btn:hover { background: #fad2cf; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <span class="header-icon">🎯</span>
+      <span class="header-title">Focus Board</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnExport" title="Export all data">📤</button>
+      <button class="icon-btn" id="btnSettings" title="Settings">⚙️</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="notes">📝 Notes <span class="tab-count" id="notesCount">0</span></button>
+    <button class="tab" data-tab="sessions">📚 Sessions</button>
+    <button class="tab" data-tab="stats">📊 Stats</button>
+    <button class="tab" data-tab="settings">⚙️ Settings</button>
+  </div>
+
+  <!-- Notes Panel -->
+  <div class="panel active" id="panel-notes">
+    <div class="notes-toolbar">
+      <button class="note-action" style="background: #065fd4; color: white; opacity: 1;" onclick="addNoteFromPanel()">➕ Add Note</button>
+      <button class="note-action" style="opacity: 1;" onclick="exportAllNotes()">📤 Export</button>
+      <button class="note-action" style="opacity: 1; color: #d93025;" onclick="clearAllNotes()">🗑️ Clear</button>
+    </div>
+    <div class="notes-list" id="notesList"></div>
+    <div class="note-input-area">
+      <textarea class="note-input" id="panelNoteInput" placeholder="Type a note... (Enter to save)"></textarea>
+      <button class="note-action" style="background: #065fd4; color: white; opacity: 1; padding: 10px 16px;" onclick="savePanelNote()">Save</button>
+    </div>
+  </div>
+
+  <!-- Sessions Panel -->
+  <div class="panel" id="panel-sessions">
+    <div class="sessions-list" id="sessionsList"></div>
+  </div>
+
+  <!-- Stats Panel -->
+  <div class="panel" id="panel-stats">
+    <div class="stats-content">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📺</div>
+          <div class="stat-value" id="statTotalTime">0h</div>
+          <div class="stat-label">Total Watch Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-value" id="statTotalNotes">0</div>
+          <div class="stat-label">Total Notes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎬</div>
+          <div class="stat-value" id="statVideosWatched">0</div>
+          <div class="stat-label">Videos Watched</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="statStreak">0</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" style="text-align: left; margin-bottom: 12px;">Weekly Progress</div>
+        <div style="display: flex; gap: 4px; align-items: flex-end; height: 100px; justify-content: space-around;">
+          <div class="day-bar" data-day="Mon" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Mon</span>
+          </div>
+          <div class="day-bar" data-day="Tue" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Tue</span>
+          </div>
+          <div class="day-bar" data-day="Wed" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Wed</span>
+          </div>
+          <div class="day-bar" data-day="Thu" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Thu</span>
+          </div>
+          <div class="day-bar" data-day="Fri" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Fri</span>
+          </div>
+          <div class="day-bar" data-day="Sat" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Sat</span>
+          </div>
+          <div class="day-bar" data-day="Sun" style="flex: 1; background: #e8eaed; border-radius: 4px 4px 0 0; transition: height 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; min-height: 20px;">
+            <span style="font-size: 10px; color: #5f6368;">Sun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div class="panel" id="panel-settings">
+    <div class="settings-content">
+      <div class="setting-group">
+        <div class="setting-title">Focus Mode</div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Default Focus Mode</span>
+            <span class="setting-desc">Auto-enable on YouTube</span>
+          </div>
+          <select class="select" id="setDefaultFocus">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+            <option value="smart">Smart (long videos only)</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Default Theater Mode</span>
+            <span class="setting-desc">Cinematic view when focus mode active</span>
+          </div>
+          <select class="select" id="setDefaultTheater">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">Break Reminders</div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Interval</span>
+            <span class="setting-desc">How often to remind you to take a break</span>
+          </div>
+          <select class="select" id="setBreakInterval">
+            <option value="15">15 minutes</option>
+            <option value="25" selected>25 minutes (Pomodoro)</option>
+            <option value="50">50 minutes (Deep Work)</option>
+            <option value="90">90 minutes (Ultradian)</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Sound Notification</span>
+            <span class="setting-desc">Play sound when break reminder appears</span>
+          </div>
+          <select class="select" id="setBreakSound">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">Appearance</div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Theme</span>
+            <span class="setting-desc">Notes panel theme</span>
+          </div>
+          <select class="select" id="setTheme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group danger-zone">
+        <div class="setting-title">Data Management</div>
+        <button class="note-action danger-btn" style="width: 100%; opacity: 1; padding: 12px;" onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button class="note-action danger-btn" style="width: 100%; opacity: 1; padding: 12px; margin-top: 8px;" onclick="exportAllData()">📤 Export All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scribbly Notes - Handwritten Notes Generator</title>
+  <style>
+    /* ===================== RESET & BASE ===================== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #eef1f5;
+      --surface: #ffffff;
+      --header-bg: linear-gradient(135deg, #2c3e50 0%, #3b5998 100%);
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --success-hover: #059669;
+      --danger: #ef4444;
+      --muted: #94a3b8;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+      --radius: 10px;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ===================== HEADER ===================== */
+    header {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+    header .brand { display: flex; align-items: center; gap: 0.6rem; }
+    header .brand h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.3px; }
+    header .brand span.icon { font-size: 1.5rem; }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ===================== MAIN LAYOUT ===================== */
+    main {
+      display: flex;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+    }
+
+    /* ===================== LEFT PANEL ===================== */
+    .editor-panel {
+      width: 400px;
+      min-width: 340px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .panel-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-header h2 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    .panel-body::-webkit-scrollbar { width: 6px; }
+    .panel-body::-webkit-scrollbar-track { background: transparent; }
+    .panel-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* ===================== FORM CONTROLS ===================== */
+    .field { margin-bottom: 1rem; }
+    .field > label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    textarea#notesInput {
+      width: 100%;
+      min-height: 180px;
+      padding: 0.75rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fafbfc;
+    }
+    textarea#notesInput:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+      background: #fff;
+    }
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .ctrl-group label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+    .ctrl-group select {
+      padding: 0.45rem 0.6rem;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .ctrl-group select:focus { outline: none; border-color: var(--accent); }
+
+    /* Color swatches */
+    .color-swatches { display: flex; gap: 0.5rem; padding-top: 0.15rem; }
+    .swatch {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      position: relative;
+    }
+    .swatch:hover { transform: scale(1.12); }
+    .swatch.active {
+      border-color: var(--text);
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--text);
+    }
+
+    /* Range slider */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 5px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      outline: none;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .slider-val {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 600;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .btn {
+      padding: 0.5rem 0.9rem;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+      letter-spacing: 0.1px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: var(--success-hover); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-light);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+
+    .page-info {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    /* ===================== RIGHT PANEL (PREVIEW) ===================== */
+    .preview-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #e2e6ec;
+    }
+    .preview-header {
+      padding: 0.6rem 1rem;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .preview-header h2 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+    .preview-scroll {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      gap: 1.5rem;
+    }
+    .preview-scroll::-webkit-scrollbar { width: 8px; }
+    .preview-scroll::-webkit-scrollbar-track { background: transparent; }
+    .preview-scroll::-webkit-scrollbar-thumb { background: #b0b8c4; border-radius: 4px; }
+
+    .canvas-wrap {
+      box-shadow: var(--shadow-lg);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .canvas-wrap canvas {
+      display: block;
+      /* We render at 2x and display at 1x for sharpness */
+    }
+    .page-label {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 0.7rem;
+      color: #aaa;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      text-align: center;
+      padding: 4rem 2rem;
+      font-size: 1rem;
+    }
+    .empty-state .big-icon { font-size: 3rem; margin-bottom: 0.5rem; display: block; }
+
+    /* ===================== TOAST ===================== */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #059669; }
+    .toast.error { background: #dc2626; }
+
+    /* ===================== LOADING OVERLAY ===================== */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 9998;
+      justify-content: center;
+      align-items: center;
+    }
+    .loading-overlay.active { display: flex; }
+    .loading-box {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 4px solid #e2e8f0;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 0.75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 900px) {
+      main { flex-direction: column; }
+      .editor-panel { width: 100%; min-width: unset; max-height: 50vh; border-right: none; border-bottom: 1px solid var(--border); }
+      .preview-scroll { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="icon">✍️</span>
+    <h1>Scribbly Notes</h1>
+  </div>
+  <div class="badge">✈️ Works Offline • Canvas Rendered</div>
+</header>
+
+<main>
+  <!-- ====== LEFT: Editor ====== -->
+  <aside class="editor-panel">
+    <div class="panel-header">
+      <h2>📝 Editor</h2>
+      <div style="display:flex;gap:0.4rem;">
+        <button class="btn btn-outline btn-sm" onclick="loadNotes()">📂 Load</button>
+        <button class="btn btn-outline btn-sm" onclick="saveNotes()">💾 Save</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <!-- Text input -->
+      <div class="field">
+        <label>Your Notes</label>
+        <textarea id="notesInput" placeholder="Start typing your notes here...&#10;&#10;The quick brown fox jumps over the lazy dog.&#10;Physics: F = ma, E = mc²&#10;&#10;Lines will flow naturally across pages."></textarea>
+      </div>
+
+      <!-- Style & paper -->
+      <div class="controls-grid">
+        <div class="ctrl-group">
+          <label>✏️ Handwriting Style</label>
+          <select id="styleSelect">
+            <option value="neat">Neat Cursive</option>
+            <option value="casual" selected>Bold Casual</option>
+            <option value="messy">Messy Student</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>📄 Paper Style</label>
+          <select id="paperSelect">
+            <option value="ruled" selected>Ruled</option>
+            <option value="grid">Grid</option>
+            <option value="plain">Plain</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Ink color -->
+      <div class="field" style="margin-top:0.85rem;">
+        <label>🎨 Ink Color</label>
+        <div class="color-swatches">
+          <div class="swatch active" style="background:#1a3a6b;" data-color="#1a3a6b" title="Blue"></div>
+          <div class="swatch" style="background:#181818;" data-color="#181818" title="Black"></div>
+          <div class="swatch" style="background:#1a5c2e;" data-color="#1a5c2e" title="Dark Green"></div>
+        </div>
+      </div>
+
+      <!-- Font size slider -->
+      <div class="controls-grid" style="margin-top:0.5rem;">
+        <div class="ctrl-group">
+          <label>Font Size</label>
+          <div class="slider-row">
+            <input type="range" id="fontSizeSlider" min="16" max="32" value="22">
+            <span class="slider-val" id="fontSizeVal">22px</span>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <label>Line Spacing</label>
+          <div class="slider-row">
+            <input type="range" id="lineSpacingSlider" min="28" max="48" value="36">
+            <span class="slider-val" id="lineSpacingVal">36px</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn btn-primary" onclick="exportAllPNG()">🖼️ Save as Images</button>
+        <button class="btn btn-success" onclick="exportPDF()">📥 Save as PDF</button>
+      </div>
+
+      <div class="page-info">📃 Pages: <span id="pageCount">0</span></div>
+    </div>
+  </aside>
+
+  <!-- ====== RIGHT: Preview ====== -->
+  <section class="preview-panel">
+    <div class="preview-header">
+      <h2>👁️ Live Preview</h2>
+      <span style="font-size:0.75rem;color:var(--muted);">A4 proportions — scroll to see all pages</span>
+    </div>
+    <div class="preview-scroll" id="previewScroll">
+      <div class="empty-state" id="emptyState">
+        <span class="big-icon">📝</span>
+        Type your notes on the left to see a live handwritten preview
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div>Generating PDF…</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SCRIBBLY NOTES — Fully offline handwritten notes generator
+// Uses Canvas API with per-character perturbation for realism
+// ============================================================
+
+(() => {
+  'use strict';
+
+  // ---- Constants: A4 at 2x resolution ----
+  const SCALE = 2;                 // render at 2x for sharpness
+  const PAGE_W = 794;              // display width (A4 at ~96dpi)
+  const PAGE_H = 1123;             // display height
+  const CW = PAGE_W * SCALE;       // canvas pixel width
+  const CH = PAGE_H * SCALE;       // canvas pixel height
+  const MARGIN_LEFT = 90 * SCALE;
+  const MARGIN_RIGHT = 60 * SCALE;
+  const MARGIN_TOP = 80 * SCALE;
+  const MARGIN_BOTTOM = 70 * SCALE;
+  const USABLE_W = CW - MARGIN_LEFT - MARGIN_RIGHT;
+
+  // ---- State ----
+  let inkColor = '#1a3a6b';
+  let canvasPages = [];
+  let debounceTimer = null;
+
+  // ---- Style presets ----
+  const STYLES = {
+    neat: {
+      name: 'Neat Cursive',
+      fontFamily: 'Georgia, "Times New Roman", serif',
+      rotRange: 1.0,       // max rotation degrees
+      xJitter: 0.6,        // horizontal jitter px (at scale)
+      yJitter: 0.8,        // vertical jitter px
+      sizeJitter: 0.04,    // font-size variation fraction
+      spacingJitter: 0.5,  // extra letter-spacing jitter px
+      wordGap: 0.3,        // extra word gap fraction of font-size
+      baselineWave: 1.2,   // sine wave amplitude px
+      baselineFreq: 0.04,  // sine frequency
+      slant: -0.06,        // italic-like slant (transform skewX)
+      strokeVar: 0.15,     // lineWidth variation
+    },
+    casual: {
+      name: 'Bold Casual',
+      fontFamily: '"Segoe UI", "Trebuchet MS", Arial, sans-serif',
+      rotRange: 2.0,
+      xJitter: 1.2,
+      yJitter: 1.5,
+      sizeJitter: 0.07,
+      spacingJitter: 1.0,
+      wordGap: 0.35,
+      baselineWave: 2.0,
+      baselineFreq: 0.03,
+      slant: -0.03,
+      strokeVar: 0.25,
+    },
+    messy: {
+      name: 'Messy Student',
+      fontFamily: '"Comic Sans MS", "Segoe Print", cursive',
+      rotRange: 3.5,
+      xJitter: 2.0,
+      yJitter: 2.5,
+      sizeJitter: 0.12,
+      spacingJitter: 1.8,
+      wordGap: 0.4,
+      baselineWave: 3.0,
+      baselineFreq: 0.05,
+      slant: -0.08,
+      strokeVar: 0.35,
+    }
+  };
+
+  // ---- Seeded random for repeatable wobble per render ----
+  let seed = 1;
+  function srand(s) { seed = s; }
+  function rand() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+  function randRange(min, max) { return min + rand() * (max - min); }
+
+  // ---- DOM refs ----
+  const notesInput = document.getElementById('notesInput');
+  const styleSelect = document.getElementById('styleSelect');
+  const paperSelect = document.getElementById('paperSelect');
+  const fontSizeSlider = document.getElementById('fontSizeSlider');
+  const fontSizeVal = document.getElementById('fontSizeVal');
+  const lineSpacingSlider = document.getElementById('lineSpacingSlider');
+  const lineSpacingVal = document.getElementById('lineSpacingVal');
+  const previewScroll = document.getElementById('previewScroll');
+  const emptyState = document.getElementById('emptyState');
+  const pageCountEl = document.getElementById('pageCount');
+
+  // ---- Color swatches ----
+  document.querySelectorAll('.swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+      inkColor = sw.dataset.color;
+      scheduleRender();
+    });
+  });
+
+  // ---- Input listeners ----
+  notesInput.addEventListener('input', scheduleRender);
+  styleSelect.addEventListener('change', scheduleRender);
+  paperSelect.addEventListener('change', scheduleRender);
+  fontSizeSlider.addEventListener('input', () => { fontSizeVal.textContent = fontSizeSlider.value + 'px'; scheduleRender(); });
+  lineSpacingSlider.addEventListener('input', () => { lineSpacingVal.textContent = lineSpacingSlider.value + 'px'; scheduleRender(); });
+
+  function scheduleRender() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(renderAll, 120);
+  }
+
+  // ============================================================
+  // PAPER BACKGROUNDS
+  // ============================================================
+  function drawPaperBackground(ctx, paperType) {
+    // Fill background
+    if (paperType === 'ruled') {
+      ctx.fillStyle = '#fffef8'; // warm cream
+    } else if (paperType === 'grid') {
+      ctx.fillStyle = '#f9fafb'; // cool white
+    } else {
+      ctx.fillStyle = '#fffdf5'; // plain cream
+    }
+    ctx.fillRect(0, 0, CW, CH);
+
+    const lineSpacing = parseInt(lineSpacingSlider.value) * SCALE;
+
+    if (paperType === 'ruled') {
+      // Blue horizontal lines
+      ctx.strokeStyle = '#c5d4e8';
+      ctx.lineWidth = 1;
+      const startY = MARGIN_TOP;
+      for (let y = startY; y < CH - MARGIN_BOTTOM; y += lineSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(CW, y);
+        ctx.stroke();
+      }
+      // Red margin line
+      ctx.strokeStyle = '#e8a0a0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN_LEFT - 10 * SCALE, 0);
+      ctx.lineTo(MARGIN_LEFT - 10 * SCALE, CH);
+      ctx.stroke();
+      // Second thin red line
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN_LEFT - 6 * SCALE, 0);
+      ctx.lineTo(MARGIN_LEFT - 6 * SCALE, CH);
+      ctx.stroke();
+
+    } else if (paperType === 'grid') {
+      ctx.strokeStyle = '#dde4ec';
+      ctx.lineWidth = 0.8;
+      const gridSize = lineSpacing;
+      // Horizontal
+      for (let y = MARGIN_TOP; y < CH - MARGIN_BOTTOM; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(MARGIN_LEFT - 20 * SCALE, y);
+        ctx.lineTo(CW - MARGIN_RIGHT + 20 * SCALE, y);
+        ctx.stroke();
+      }
+      // Vertical
+      for (let x = MARGIN_LEFT - 20 * SCALE; x < CW - MARGIN_RIGHT + 20 * SCALE; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, MARGIN_TOP);
+        ctx.lineTo(x, CH - MARGIN_BOTTOM);
+        ctx.stroke();
+      }
+    }
+    // plain: just the fill
+  }
+
+  // ============================================================
+  // WORD WRAPPING — split text into lines that fit the page width
+  // ============================================================
+  function wordWrapText(ctx, text, fontSize, style) {
+    const allLines = text.split('\n');
+    const wrappedLines = [];
+
+    for (const rawLine of allLines) {
+      if (rawLine.trim() === '') {
+        wrappedLines.push('');
+        continue;
+      }
+      const words = rawLine.split(/(\s+)/);
+      let currentLine = '';
+
+      for (const word of words) {
+        const testLine = currentLine + word;
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width + Math.abs(style.spacingJitter) * testLine.length * SCALE;
+
+        if (testWidth > USABLE_W && currentLine.trim() !== '') {
+          wrappedLines.push(currentLine);
+          currentLine = word.trimStart();
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) {
+        wrappedLines.push(currentLine);
+      }
+    }
+    return wrappedLines;
+  }
+
+  // ============================================================
+  // PAGINATE — split wrapped lines into pages, never cut a line
+  // ============================================================
+  function paginateLines(lines, lineSpacing) {
+    const usableH = CH - MARGIN_TOP - MARGIN_BOTTOM;
+    const linesPerPage = Math.max(1, Math.floor(usableH / lineSpacing));
+    const pages = [];
+    let idx = 0;
+
+    while (idx < lines.length) {
+      pages.push(lines.slice(idx, idx + linesPerPage));
+      idx += linesPerPage;
+    }
+    if (pages.length === 0) pages.push([]);
+    return pages;
+  }
+
+  // ============================================================
+  // RENDER ONE LINE — character-by-character with perturbation
+  // ============================================================
+  function renderLine(ctx, text, x, y, fontSize, style, charIndex) {
+    let curX = x;
+    const scaledFontSize = fontSize * SCALE;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const ci = charIndex + i;
+
+      // Per-character variations
+      const sizeOff = scaledFontSize * (1 + randRange(-style.sizeJitter, style.sizeJitter));
+      const rot = randRange(-style.rotRange, style.rotRange) * Math.PI / 180;
+      const dx = randRange(-style.xJitter, style.xJitter) * SCALE;
+      const dy = randRange(-style.yJitter, style.yJitter) * SCALE;
+      const baselineOff = Math.sin(ci * style.baselineFreq * Math.PI * 2) * style.baselineWave * SCALE;
+      const extraSpacing = randRange(-style.spacingJitter * 0.3, style.spacingJitter) * SCALE;
+
+      // Slight stroke width variation for pen pressure effect
+      const alpha = 0.75 + randRange(-style.strokeVar * 0.5, style.strokeVar * 0.5);
+
+      ctx.save();
+      ctx.translate(curX + dx, y + dy + baselineOff);
+      ctx.rotate(rot);
+
+      // Slant for cursive feel
+      ctx.transform(1, 0, style.slant, 1, 0, 0);
+
+      ctx.font = `${Math.round(sizeOff)}px ${style.fontFamily}`;
+      ctx.globalAlpha = Math.min(1, Math.max(0.55, alpha));
+
+      // Slight shadow for ink depth
+      ctx.shadowColor = 'rgba(0,0,0,0.08)';
+      ctx.shadowBlur = 1 * SCALE;
+      ctx.shadowOffsetX = 0.3 * SCALE;
+      ctx.shadowOffsetY = 0.3 * SCALE;
+
+      ctx.fillText(ch, 0, 0);
+
+      // Second pass for thicker strokes (simulates pen pressure)
+      if (rand() > 0.6) {
+        ctx.globalAlpha = 0.12;
+        ctx.fillText(ch, 0.4 * SCALE, 0);
+      }
+
+      ctx.restore();
+
+      // Advance cursor
+      const charWidth = ctx.measureText(ch).width;
+      ctx.font = `${Math.round(scaledFontSize)}px ${style.fontFamily}`;
+      const baseCharWidth = ctx.measureText(ch).width;
+      curX += baseCharWidth + extraSpacing;
+
+      // Extra gap for spaces
+      if (ch === ' ') {
+        curX += scaledFontSize * style.wordGap * randRange(0.6, 1.4);
+      }
+    }
+    return charIndex + text.length;
+  }
+
+  // ============================================================
+  // RENDER ALL PAGES
+  // ============================================================
+  function renderAll() {
+    const text = notesInput.value;
+    const styleName = styleSelect.value;
+    const paperType = paperSelect.value;
+    const fontSize = parseInt(fontSizeSlider.value);
+    const lineSpacing = parseInt(lineSpacingSlider.value) * SCALE;
+    const style = STYLES[styleName];
+
+    // Clear preview
+    previewScroll.innerHTML = '';
+    canvasPages = [];
+
+    if (!text.trim()) {
+      previewScroll.innerHTML = `<div class="empty-state" id="emptyState">
+        <span class="big-icon">📝</span>
+        Type your notes on the left to see a live handwritten preview
+      </div>`;
+      pageCountEl.textContent = '0';
+      return;
+    }
+
+    // Create a temp canvas to measure text
+    const tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = CW;
+    tmpCanvas.height = CH;
+    const tmpCtx = tmpCanvas.getContext('2d');
+    tmpCtx.font = `${fontSize * SCALE}px ${style.fontFamily}`;
+
+    // Word wrap
+    const wrappedLines = wordWrapText(tmpCtx, text, fontSize, style);
+
+    // Paginate — never split a line
+    const pages = paginateLines(wrappedLines, lineSpacing);
+
+    pageCountEl.textContent = pages.length;
+
+    // Reset random seed for consistent rendering
+    srand(42);
+
+    let globalCharIdx = 0;
+
+    for (let p = 0; p < pages.length; p++) {
+      const canvas = document.createElement('canvas');
+      canvas.width = CW;
+      canvas.height = CH;
+      canvas.style.width = PAGE_W + 'px';
+      canvas.style.height = PAGE_H + 'px';
+      const ctx = canvas.getContext('2d');
+
+      // Paper background
+      drawPaperBackground(ctx, paperType);
+
+      // Set ink color
+      ctx.fillStyle = inkColor;
+
+      const pageLines = pages[p];
+      let curY = MARGIN_TOP + lineSpacing; // first line baseline
+
+      for (let l = 0; l < pageLines.length; l++) {
+        const line = pageLines[l];
+        ctx.font = `${fontSize * SCALE}px ${style.fontFamily}`;
+        ctx.fillStyle = inkColor;
+
+        if (line.trim() !== '') {
+          // Small random indent variation
+          const indentJitter = randRange(-3, 3) * SCALE;
+          globalCharIdx = renderLine(ctx, line, MARGIN_LEFT + indentJitter, curY, fontSize, style, globalCharIdx);
+        } else {
+          globalCharIdx += 1;
+        }
+
+        curY += lineSpacing;
+      }
+
+      // Page number (subtle)
+      ctx.save();
+      ctx.font = `${11 * SCALE}px "Segoe UI", sans-serif`;
+      ctx.fillStyle = '#c0c0c0';
+      ctx.globalAlpha = 0.6;
+      ctx.shadowColor = 'transparent';
+      ctx.textAlign = 'center';
+      ctx.fillText(`— ${p + 1} —`, CW / 2, CH - 30 * SCALE);
+      ctx.restore();
+
+      // Add subtle paper texture noise
+      addPaperTexture(ctx);
+
+      // Wrap in container
+      const wrap = document.createElement('div');
+      wrap.className = 'canvas-wrap';
+      wrap.appendChild(canvas);
+
+      // Download button per page
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'btn btn-outline btn-sm';
+      dlBtn.style.cssText = 'position:absolute;top:8px;right:8px;opacity:0.6;';
+      dlBtn.innerHTML = '💾';
+      dlBtn.title = `Download page ${p + 1}`;
+      dlBtn.onclick = () => downloadCanvasAsPNG(canvas, `scribbly-page-${p + 1}.png`);
+      dlBtn.onmouseenter = () => dlBtn.style.opacity = '1';
+      dlBtn.onmouseleave = () => dlBtn.style.opacity = '0.6';
+      wrap.appendChild(dlBtn);
+
+      previewScroll.appendChild(wrap);
+      canvasPages.push(canvas);
+    }
+  }
+
+  // ---- Add subtle paper grain ----
+  function addPaperTexture(ctx) {
+    const imgData = ctx.getImageData(0, 0, CW, CH);
+    const data = imgData.data;
+    // Very subtle noise — only every 4th pixel for performance
+    for (let i = 0; i < data.length; i += 16) {
+      const noise = (rand() - 0.5) * 6;
+      data[i] = Math.max(0, Math.min(255, data[i] + noise));
+      data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+      data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  // ============================================================
+  // EXPORT — PNG per page
+  // ============================================================
+  function downloadCanvasAsPNG(canvas, filename) {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 500);
+    }, 'image/png');
+  }
+
+  window.exportAllPNG = function() {
+    if (canvasPages.length === 0) { showToast('No pages to export', 'error'); return; }
+    canvasPages.forEach((c, i) => {
+      setTimeout(() => downloadCanvasAsPNG(c, `scribbly-page-${i + 1}.png`), i * 300);
+    });
+    showToast(`Downloading ${canvasPages.length} image${canvasPages.length > 1 ? 's' : ''}…`, 'success');
+  };
+
+  // ============================================================
+  // EXPORT — PDF (pure canvas-based, no external libs)
+  // Builds a minimal valid PDF from canvas images
+  // ============================================================
+  window.exportPDF = async function() {
+    if (canvasPages.length === 0) { showToast('No pages to export', 'error'); return; }
+
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('active');
+
+    // Small delay for UI
+    await new Promise(r => setTimeout(r, 80));
+
+    try {
+      // A4 in points: 595.28 x 841.89
+      const pdfW = 595.28;
+      const pdfH = 841.89;
+
+      // Collect JPEG data from canvases (smaller than PNG)
+      const images = [];
+      for (const canvas of canvasPages) {
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const base64 = dataUrl.split(',')[1];
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        images.push({ bytes, width: canvas.width, height: canvas.height });
+      }
+
+      // Build PDF manually
+      const pdf = buildPDF(images, pdfW, pdfH);
+      const blob = new Blob([pdf], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'scribbly-notes.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('PDF downloaded!', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('PDF export failed: ' + err.message, 'error');
+    } finally {
+      overlay.classList.remove('active');
+    }
+  };
+
+  // ---- Minimal PDF builder ----
+  function buildPDF(images, pageW, pageH) {
+    let objId = 0;
+    const objects = [];
+    const offsets = [];
+
+    function addObj(content) {
+      objId++;
+      objects.push({ id: objId, content });
+      return objId;
+    }
+
+    // 1. Catalog
+    const catalogId = addObj(null);
+    // 2. Pages
+    const pagesId = addObj(null);
+
+    // For each page: image XObject, page content stream, page object
+    const pageIds = [];
+    const imgInfo = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+
+      // Image XObject
+      const imgObjId = addObj(null);
+      imgInfo.push({ id: imgObjId, img });
+
+      // Content stream: draw image full page
+      const contentStr = `q ${pageW} 0 0 ${pageH} 0 0 cm /Img${i} Do Q`;
+      const contentId = addObj(null);
+      objects[contentId - 1].content = `${contentId} 0 obj\n<< /Length ${contentStr.length} >>\nstream\n${contentStr}\nendstream\nendobj\n`;
+
+      // Page object
+      const pageId = addObj(null);
+      objects[pageId - 1].content = `${pageId} 0 obj\n<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Contents ${contentId} 0 R /Resources << /XObject << /Img${i} ${imgObjId} 0 R >> >> >>\nendobj\n`;
+      pageIds.push(pageId);
+    }
+
+    // Fill catalog
+    objects[catalogId - 1].content = `${catalogId} 0 obj\n<< /Type /Catalog /Pages ${pagesId} 0 R >>\nendobj\n`;
+
+    // Fill pages
+    const kidRefs = pageIds.map(id => `${id} 0 R`).join(' ');
+    objects[pagesId - 1].content = `${pagesId} 0 obj\n<< /Type /Pages /Kids [${kidRefs}] /Count ${pageIds.length} >>\nendobj\n`;
+
+    // Now we need to build binary with image streams
+    // First serialize everything except image objects
+    // then handle images separately because they contain binary data
+
+    // Build full output
+    const encoder = new TextEncoder();
+    const parts = [];
+
+    parts.push(encoder.encode('%PDF-1.4\n%\xC3\xA4\xC3\xBC\xC3\xB6\xC3\x9F\n'));
+
+    for (let i = 0; i < objects.length; i++) {
+      offsets.push(parts.reduce((s, p) => s + p.length, 0));
+
+      const obj = objects[i];
+      // Check if this is an image object
+      const imgEntry = imgInfo.find(im => im.id === obj.id);
+      if (imgEntry) {
+        const img = imgEntry.img;
+        const header = `${obj.id} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${img.width} /Height ${img.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${img.bytes.length} >>\nstream\n`;
+        const footer = `\nendstream\nendobj\n`;
+        parts.push(encoder.encode(header));
+        parts.push(img.bytes);
+        parts.push(encoder.encode(footer));
+      } else {
+        parts.push(encoder.encode(obj.content));
+      }
+    }
+
+    // Cross-reference table
+    const xrefOffset = parts.reduce((s, p) => s + p.length, 0);
+    let xref = `xref\n0 ${objId + 1}\n0000000000 65535 f \n`;
+    for (let i = 0; i < offsets.length; i++) {
+      xref += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+    }
+    xref += `trailer\n<< /Size ${objId + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+    parts.push(encoder.encode(xref));
+
+    // Combine all parts
+    const totalLen = parts.reduce((s, p) => s + p.length, 0);
+    const result = new Uint8Array(totalLen);
+    let pos = 0;
+    for (const part of parts) {
+      result.set(part, pos);
+      pos += part.length;
+    }
+    return result;
+  }
+
+  // ============================================================
+  // SAVE / LOAD notes (JSON)
+  // ============================================================
+  window.saveNotes = function() {
+    const data = {
+      text: notesInput.value,
+      style: styleSelect.value,
+      paper: paperSelect.value,
+      color: inkColor,
+      fontSize: fontSizeSlider.value,
+      lineSpacing: lineSpacingSlider.value,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('scribblyNotes', JSON.stringify(data));
+
+    // Also offer download
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'scribbly-notes.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Notes saved!');
+  };
+
+  window.loadNotes = function() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          notesInput.value = data.text || '';
+          styleSelect.value = data.style || 'casual';
+          paperSelect.value = data.paper || 'ruled';
+          inkColor = data.color || '#1a3a6b';
+          document.querySelectorAll('.swatch').forEach(s => {
+            s.classList.toggle('active', s.dataset.color === inkColor);
+          });
+          fontSizeSlider.value = data.fontSize || 22;
+          fontSizeVal.textContent = fontSizeSlider.value + 'px';
+          lineSpacingSlider.value = data.lineSpacing || 36;
+          lineSpacingVal.textContent = lineSpacingSlider.value + 'px';
+          renderAll();
+          showToast('Notes loaded!');
+        } catch (err) {
+          showToast('Invalid file', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
+
+  // ---- Restore from localStorage on load ----
+  function restoreFromStorage() {
+    const saved = localStorage.getItem('scribblyNotes');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        notesInput.value = data.text || '';
+        styleSelect.value = data.style || 'casual';
+        paperSelect.value = data.paper || 'ruled';
+        inkColor = data.color || '#1a3a6b';
+        document.querySelectorAll('.swatch').forEach(s => {
+          s.classList.toggle('active', s.dataset.color === inkColor);
+        });
+        fontSizeSlider.value = data.fontSize || 22;
+        fontSizeVal.textContent = fontSizeSlider.value + 'px';
+        lineSpacingSlider.value = data.lineSpacing || 36;
+        lineSpacingVal.textContent = lineSpacingSlider.value + 'px';
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  // ============================================================
+  // TOAST
+  // ============================================================
+  function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast ' + type + ' show';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  restoreFromStorage();
+  renderAll();
+
+})();
+</script>
+</body>
+</html>

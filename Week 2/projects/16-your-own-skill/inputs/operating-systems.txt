@@ -1,0 +1,6 @@
+Operating Systems Notes - CS302
+Topics: Virtual Memory, Paging, Page Faults, Thrashing, Deadlocks
+Page 5: Paging divides physical memory into frames and logical memory into pages. Page table translates VPN to PPN.
+Page 8: Page replacement algorithms: FIFO, LRU, Optimal (Belady).
+Page 12: Deadlock conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait. Banker's Algorithm for avoidance.
+Page 19: Thrashing occurs when CPU spending more time paging than executing instructions, caused by degree of multiprogramming exceeding working set sizes.

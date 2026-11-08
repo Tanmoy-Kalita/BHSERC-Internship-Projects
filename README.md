@@ -26,24 +26,34 @@ The following areas are explored throughout the internship:
 ## Repository Structure
 
 ```text
-BSERC-GenAI-Internship/
+BHSERC-Internship-Projects/
 │
-├── 01-prompt-engineering/
-│   ├── README.md
-│   └── main.py
+├── Week 1/
+│   ├── Project 1 - Source-grounded AI notebook.md
+│   └── fullstack-simulator/
 │
-├── 02-llm-experiments/
-│   ├── README.md
-│   └── main.py
+├── Week 2/
+│   ├── index.html                    # Visual Interactive Dashboard
+│   ├── README.md                     # Complete Week 2 documentation & audit
+│   └── projects/
+│       ├── 1-pdf-studio/             # Section A: Web Tools (29 tools)
+│       ├── 2-form-photo-fixer/
+│       ├── 3-resume-builder/
+│       ├── 4-cbt-mock-test/
+│       ├── 5-scribbly-notes/
+│       ├── 6-reel-monster/           # Section B: Phone Apps & Games
+│       ├── 7-bill-book/
+│       ├── 8-auto-rally/
+│       ├── 9-youtube-focus-board/    # Section C: Chrome Extensions
+│       ├── 10-job-clipper/
+│       ├── 11-circle-to-fix/
+│       ├── 12-chat-saver/
+│       ├── 13-style-spy/
+│       ├── 14-tab-goblin/
+│       ├── 15-one-minute-reel-cut/   # Section D: Video, Skills & Design
+│       ├── 16-your-own-skill/
+│       └── 17-same-page-new-design/
 │
-├── 03-rag-implementation/
-│   ├── README.md
-│   └── main.py
-│
-├── assets/
-│   └── screenshots/
-│
-├── .gitignore
 └── README.md
 ```
 

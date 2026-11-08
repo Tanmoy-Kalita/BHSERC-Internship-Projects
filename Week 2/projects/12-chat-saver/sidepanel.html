@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Saver - Side Panel</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="sidepanel-container">
+    <!-- Header -->
+    <header class="sidepanel-header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Chat Saver</span>
+        </div>
+        <span class="version">v1.0.0</span>
+      </div>
+      <div class="header-actions">
+        <button id="btnTheme" class="btn-icon" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button id="btnSettings" class="btn-icon" title="Settings" aria-label="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search & Filter Bar -->
+    <div class="toolbar">
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search conversations..." aria-label="Search conversations">
+        <button id="btnClearSearch" class="btn-icon-sm" aria-label="Clear search" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="filter-bar">
+        <select id="filterPlatform" aria-label="Filter by platform">
+          <option value="">All Platforms</option>
+          <option value="chat.openai.com">ChatGPT</option>
+          <option value="chatgpt.com">ChatGPT</option>
+          <option value="claude.ai">Claude</option>
+          <option value="bard.google.com">Bard</option>
+          <option value="gemini.google.com">Gemini</option>
+          <option value="chat.mistral.ai">Mistral</option>
+          <option value="pi.ai">Pi</option>
+          <option value="you.com">You.com</option>
+          <option value="perplexity.ai">Perplexity</option>
+        </select>
+        <select id="filterSort" aria-label="Sort by">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="title-asc">Title A-Z</option>
+          <option value="messages-desc">Most Messages</option>
+        </select>
+        <button id="btnFavoritesOnly" class="btn-filter" title="Favorites Only" aria-label="Show favorites only">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tag Filter Chips -->
+    <div class="tag-filter-bar" id="tagFilterBar" style="display: none;">
+      <span class="tag-filter-label">Tags:</span>
+      <div class="tag-chips" id="tagChips"></div>
+      <button id="btnClearTagFilter" class="btn-filter-sm" aria-label="Clear tag filter">×</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="sidepanel-main">
+      <!-- Conversation List -->
+      <section class="conversation-list-section">
+        <div class="list-header">
+          <h2 id="listTitle">All Conversations</h2>
+          <span class="conversation-count" id="conversationCount">0</span>
+        </div>
+        <div class="conversation-list" id="conversationList">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <span>Loading conversations...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conversation Detail View -->
+      <section class="conversation-detail-section" id="detailSection" style="display: none;">
+        <div class="detail-header">
+          <button id="btnBack" class="btn-icon" aria-label="Back to list">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <div class="detail-title">
+            <h3 id="detailTitle">Conversation</h3>
+            <span class="detail-platform" id="detailPlatform"></span>
+          </div>
+          <div class="detail-actions">
+            <button id="btnToggleFavorite" class="btn-icon" aria-label="Toggle favorite" title="Add to favorites">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </button>
+            <button id="btnEditTags" class="btn-icon" aria-label="Edit tags" title="Edit tags">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </button>
+            <button id="btnDeleteConv" class="btn-icon danger" aria-label="Delete" title="Delete conversation">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="detail-content" id="detailContent">
+          <div class="detail-meta" id="detailMeta"></div>
+          <div class="message-list" id="messageList"></div>
+        </div>
+      </section>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <h3>No Conversations Yet</h3>
+        <p>Visit an AI chat platform and save your conversations</p>
+        <button id="btnOpenChat" class="btn btn-primary" style="margin-top: 16px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          Open ChatGPT
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sidepanel-footer">
+      <div class="footer-left">
+        <button id="btnExport" class="btn btn-secondary" title="Export Conversations">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export
+        </button>
+        <button id="btnImport" class="btn btn-secondary" title="Import Conversations">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Import
+        </button>
+      </div>
+      <div class="footer-right">
+        <span class="storage-info" id="storageInfo">0 KB used</span>
+      </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+      <div class="modal" id="modalContent"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

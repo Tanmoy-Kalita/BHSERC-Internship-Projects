@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Own Skill - Interactive Agent Skills Studio</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --panel: #131b2e;
+      --card: #1c2640;
+      --border: #2a3859;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --accent: #38bdf8;
+      --yellow: #facc15;
+      --red: #f87171;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--panel);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .badge {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Terminal pane */
+    .terminal-container {
+      background: #040711;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .terminal-bar {
+      background: #0f172a;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #eab308; }
+    .dot-green { background: #22c55e; }
+
+    .terminal-title {
+      margin-left: 0.5rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .terminal-body {
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .msg-command {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .msg-system {
+      color: #94a3b8;
+    }
+
+    .msg-question {
+      color: #f1f5f9;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.08);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border-left: 3px solid #38bdf8;
+    }
+
+    .msg-user {
+      color: #a7f3d0;
+      background: rgba(16, 185, 129, 0.08);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .msg-examiner {
+      color: #fde047;
+      background: rgba(234, 179, 8, 0.08);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border-left: 3px solid #eab308;
+    }
+
+    .msg-score {
+      background: #1e293b;
+      border: 1px solid var(--primary);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    .terminal-input-bar {
+      padding: 0.75rem 1rem;
+      background: #0f172a;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: #040711;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      color: #f1f5f9;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .terminal-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #040711;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #273656;
+    }
+
+    /* Side panel: Skill Inspector & Comparison */
+    .side-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sample-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sample-btn {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+
+    .sample-btn:hover {
+      border-color: var(--accent);
+      background: #243252;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .comp-col {
+      background: var(--card);
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .comp-col.good {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .comp-col.bad {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .comp-title {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .comp-col.good .comp-title { color: var(--primary); }
+    .comp-col.bad .comp-title { color: var(--red); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span style="font-size: 1.5rem;">🎓</span>
+      <div>
+        <h1>Project 16 · Your Own Skill (/viva)</h1>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Oral Examination Agent Skill Runner & Auditor</span>
+      </div>
+      <span class="badge">Session Active</span>
+    </div>
+    <div style="display:flex; gap: 0.5rem;">
+      <button id="btnRestartSession" class="btn btn-secondary">🔄 Fresh Session</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Terminal Emulator -->
+    <div class="terminal-container">
+      <div class="terminal-bar">
+        <div class="terminal-dot dot-red"></div>
+        <div class="terminal-dot dot-yellow"></div>
+        <div class="terminal-dot dot-green"></div>
+        <span class="terminal-title">agent-session · bash viva-runner</span>
+      </div>
+
+      <div id="terminalBody" class="terminal-body">
+        <div class="msg-system">Welcome to Agent Skills Runner v1.0. Available skills: /viva, /resume-roast, /one-page-revision.</div>
+        <div class="msg-command">&gt; /viva thermo-notes.pdf</div>
+        <div class="msg-system">Reading notes. Asking 5 questions, one at a time.</div>
+        <div class="msg-question">Q1. Why can no engine beat Carnot efficiency operating between reservoirs TH and TC?</div>
+      </div>
+
+      <div class="terminal-input-bar">
+        <span style="font-family: monospace; color: var(--primary); font-weight: bold; align-self: center;">&gt;</span>
+        <input type="text" id="userInput" class="terminal-input" placeholder="Type your answer or enter a command like /viva os-notes.txt..." autofocus>
+        <button id="btnSend" class="btn btn-primary">Send Answer</button>
+      </div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="side-col">
+      <!-- 3 Test Inputs -->
+      <div class="card">
+        <h3>📂 Tested on 3 Different Inputs</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+          Click any preset to launch the viva exam with notes loaded:
+        </p>
+        <div class="sample-btn-group">
+          <button class="sample-btn" onclick="startTestInput(1)">
+            🔥 <strong>Input 1: Thermodynamics Notes</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Carnot cycle, Kelvin-Planck, Entropy, Heat pumps</div>
+          </button>
+          <button class="sample-btn" onclick="startTestInput(2)">
+            💻 <strong>Input 2: Operating Systems</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Virtual memory, LRU, Thrashing, Banker's algorithm</div>
+          </button>
+          <button class="sample-btn" onclick="startTestInput(3)">
+            🌳 <strong>Input 3: Data Structures & Algorithms</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">AVL balance, Heaps, Dijkstra, Dynamic programming</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- With Skill vs Without Skill comparison -->
+      <div class="card">
+        <h3>⚖️ Without Skill vs With Skill</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Evidence of what got better when running the skill:
+        </p>
+        <div class="comparison-grid">
+          <div class="comp-col bad">
+            <div class="comp-title">❌ Without Skill</div>
+            <ul style="padding-left: 1rem; line-height: 1.4;">
+              <li>Dumps all 5 questions at once</li>
+              <li>Generic "Great job!" score with no critical rigor</li>
+              <li>Forgets page citations</li>
+              <li>No one-by-one dialogue</li>
+            </ul>
+          </div>
+          <div class="comp-col good">
+            <div class="comp-title">✅ With /viva Skill</div>
+            <ul style="padding-left: 1rem; line-height: 1.4;">
+              <li>Strict 1 question at a time</li>
+              <li>Nuanced critique ("Partly. What about ideal limit?")</li>
+              <li>Direct reference: "Revise page 14"</li>
+              <li>Accurate 5-point score</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Definition -->
+      <div class="card">
+        <h3>📄 Active SKILL.md</h3>
+        <pre style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted); background: var(--card); padding: 0.75rem; border-radius: 6px; overflow-x: auto;">
+name: viva
+triggers: /viva &lt;file&gt;
+rules:
+  - 1 question at a time
+  - Exactly 5 questions
+  - Probe partial answers
+  - Final score /5 + Revise page X</pre>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const examData = {
+      1: {
+        name: "thermo-notes.pdf",
+        questions: [
+          {
+            q: "Q1. Why can no engine beat Carnot efficiency operating between reservoirs TH and TC?",
+            ideal: ["friction", "irreversible", "second law", "reversible", "kelvin", "clausius"],
+            replyGood: "Examiner: Spot on. The Carnot cycle consists purely of reversible processes. Any real engine experiences irreversibilities like friction, yielding eta < eta_Carnot.",
+            replyPartial: "Examiner: Partly. Friction lowers real engine output, but what about the ideal theoretical limit dictated by the Second Law of Thermodynamics?",
+            revision: "Revise page 14: Carnot efficiency and Second Law formulation."
+          },
+          {
+            q: "Q2. State the Kelvin-Planck statement of the Second Law. Can an engine operate at 100% efficiency?",
+            ideal: ["single reservoir", "impossible", "100%", "sink", "heat rejected"],
+            replyGood: "Examiner: Exact. No cycle can convert all absorbed heat into net work without rejecting heat to a low-temperature sink.",
+            replyPartial: "Examiner: Almost. Remember that heat rejection to a lower temperature sink is thermodynamically obligatory.",
+            revision: "Revise page 2: Heat reservoirs and Kelvin-Planck statement."
+          },
+          {
+            q: "Q3. What happens to the entropy of the universe in an irreversible process according to Clausius inequality?",
+            ideal: ["increases", "greater than zero", "positive", "grows"],
+            replyGood: "Examiner: Correct! For any irreversible isolated process, delta S_univ > 0.",
+            replyPartial: "Examiner: Careless! Entropy of the system can decrease if heat is expelled, but the entropy of the universe must strictly increase.",
+            revision: "Revise page 2: Clausius inequality and principle of entropy increase."
+          },
+          {
+            q: "Q4. In an ideal Otto cycle, how does increasing compression ratio r affect thermal efficiency?",
+            ideal: ["increases", "higher", "1 - 1/r^(gamma-1)", "rises"],
+            replyGood: "Examiner: Very good. Efficiency eta = 1 - 1/r^(gamma - 1), which monotonically increases with compression ratio r.",
+            replyPartial: "Examiner: It increases, but be precise with the air-standard formula and knock limit constraints.",
+            revision: "Revise page 8: Air standard Otto cycle derivations."
+          },
+          {
+            q: "Q5. Differentiate between a heat pump and a refrigerator in terms of COP.",
+            ideal: ["cop_hp = cop_r + 1", "heating", "cooling", "target", "desired effect"],
+            replyGood: "Examiner: Excellent. Desired output for refrigerator is cooling Q_C, while for heat pump it is heating Q_H. Mathematically COP_HP = COP_R + 1.",
+            replyPartial: "Examiner: Keep the fundamental relationship in mind: COP of a heat pump is always higher by 1 than the equivalent refrigerator.",
+            revision: "Revise page 5: Coefficient of Performance definitions."
+          }
+        ]
+      },
+      2: {
+        name: "operating-systems.txt",
+        questions: [
+          {
+            q: "Q1. What causes thrashing in an operating system, and how does the OS detect it?",
+            ideal: ["paging", "working set", "cpu utilization", "page fault", "multiprogramming"],
+            replyGood: "Examiner: Spot on! High page fault rate causes processes to wait on swap I/O, plunging CPU utilization.",
+            replyPartial: "Examiner: Partly correct. The root cause is the sum of working sets exceeding available physical RAM.",
+            revision: "Revise page 19: Working set model and thrashing mitigation."
+          },
+          {
+            q: "Q2. Explain the four necessary conditions for deadlock to occur.",
+            ideal: ["mutual exclusion", "hold and wait", "no preemption", "circular wait"],
+            replyGood: "Examiner: Flawless! Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait.",
+            replyPartial: "Examiner: You missed circular wait or no-preemption. All four must hold simultaneously for deadlock.",
+            revision: "Revise page 12: Coffman conditions for deadlock."
+          },
+          {
+            q: "Q3. What is Belady's Anomaly, and which page replacement algorithm suffers from it?",
+            ideal: ["fifo", "frames", "page faults increase"],
+            replyGood: "Examiner: Correct. FIFO suffers from Belady's Anomaly where allocating more page frames results in more page faults.",
+            replyPartial: "Examiner: Remember: FIFO suffers from it, while stack algorithms like LRU are immune.",
+            revision: "Revise page 8: Belady's anomaly vs stack algorithms."
+          },
+          {
+            q: "Q4. How does the Translation Lookaside Buffer (TLB) speed up address translation in paging?",
+            ideal: ["cache", "vpn", "ppn", "hardware", "hit"],
+            replyGood: "Examiner: Exact. The associative hardware cache avoids touching the in-memory page table on TLB hits.",
+            replyPartial: "Examiner: Partly. Detail the Effective Access Time (EAT) calculation when a TLB miss occurs.",
+            revision: "Revise page 6: Multi-level paging and TLB hit ratios."
+          },
+          {
+            q: "Q5. State how the Banker's Algorithm determines if an allocation leaves the system in a safe state.",
+            ideal: ["safe state", "need <= work", "work = work + allocation", "finish"],
+            replyGood: "Examiner: Excellent. It simulates resource allocation and verifies there exists a safe sequence where every process can complete.",
+            replyPartial: "Examiner: Ensure you specify the Need matrix calculation (Max - Allocation <= Available).",
+            revision: "Revise page 14: Banker's Safety Algorithm."
+          }
+        ]
+      },
+      3: {
+        name: "data-structures.txt",
+        questions: [
+          {
+            q: "Q1. Why are AVL tree lookup operations strictly O(log n)? What is the maximum height difference permitted?",
+            ideal: ["1", "balance factor", "-1", "height balanced", "rotations"],
+            replyGood: "Examiner: Correct. Height of left and right subtrees differs by at most 1, guaranteeing height <= 1.44 log n.",
+            replyPartial: "Examiner: Close. Be sure to note that the balance factor must remain strictly in {-1, 0, 1}.",
+            revision: "Revise page 4: AVL balance factor and tree rotations."
+          },
+          {
+            q: "Q2. Why is building a binary heap from an unsorted array O(n) rather than O(n log n)?",
+            ideal: ["bottom up", "sift down", "series", "sum", "leaf nodes"],
+            replyGood: "Examiner: Spot on! Half the nodes are leaves requiring 0 swaps. The summation sum(h / 2^h) converges to 2, yielding O(n).",
+            replyPartial: "Examiner: Partly. Remember that bottom-up heapify does sift-down operations, where most nodes are at small heights.",
+            revision: "Revise page 11: Floyd's build-heap analysis."
+          },
+          {
+            q: "Q3. Why does Dijkstra's algorithm fail on graphs with negative edge weights?",
+            ideal: ["greedy", "visited", "shorter path", "negative cycle", "relaxation"],
+            replyGood: "Examiner: Very good! Dijkstra greedily finalizes the shortest distance once a node is visited, assuming paths only grow in weight.",
+            replyPartial: "Examiner: Note that once a node is marked visited, Dijkstra never re-evaluates it, so a subsequent negative edge breaks the greedy choice.",
+            revision: "Revise page 16: Dijkstra vs Bellman-Ford algorithm."
+          },
+          {
+            q: "Q4. What are the two core prerequisites for a problem to be solvable via Dynamic Programming?",
+            ideal: ["optimal substructure", "overlapping subproblems"],
+            replyGood: "Examiner: Flawless! Optimal Substructure and Overlapping Subproblems.",
+            replyPartial: "Examiner: Memorize this duo: 1) Optimal Substructure, 2) Overlapping Subproblems.",
+            revision: "Revise page 22: Dynamic Programming principles."
+          },
+          {
+            q: "Q5. In a hash table with open addressing, what is primary clustering and how does double hashing solve it?",
+            ideal: ["linear probing", "long clusters", "secondary hash", "offset"],
+            replyGood: "Examiner: Excellent. Linear probing forms long contiguous occupied runs; double hashing uses hash2(k) as probe step size.",
+            replyPartial: "Examiner: Partly. Note that primary clustering is caused by linear probe sequences merging.",
+            revision: "Revise page 9: Collision resolution strategies."
+          }
+        ]
+      }
+    };
+
+    let currentInput = 1;
+    let currentQIndex = 0;
+    let userScore = 0;
+    let examFinished = false;
+
+    const terminalBody = document.getElementById('terminalBody');
+    const userInput = document.getElementById('userInput');
+    const btnSend = document.getElementById('btnSend');
+    const btnRestartSession = document.getElementById('btnRestartSession');
+
+    function appendMessage(text, className) {
+      const msg = document.createElement('div');
+      msg.className = className;
+      msg.innerHTML = text;
+      terminalBody.appendChild(msg);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    function startTestInput(id) {
+      currentInput = id;
+      currentQIndex = 0;
+      userScore = 0;
+      examFinished = false;
+      const data = examData[id];
+      terminalBody.innerHTML = '';
+      appendMessage(`&gt; /viva ${data.name}`, 'msg-command');
+      appendMessage(`Reading ${data.name}. Asking 5 questions, one at a time.`, 'msg-system');
+      appendMessage(data.questions[0].q, 'msg-question');
+    }
+
+    function handleUserInput() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      userInput.value = '';
+
+      if (text.startsWith('/viva')) {
+        let arg = text.split(' ')[1] || '';
+        if (arg.includes('os')) startTestInput(2);
+        else if (arg.includes('dsa') || arg.includes('data')) startTestInput(3);
+        else startTestInput(1);
+        return;
+      }
+
+      if (examFinished) {
+        appendMessage(`&gt; ${text}`, 'msg-user');
+        appendMessage(`Session ended with Score: ${userScore}/5. Click 'Fresh Session' or select an input from the right to start another test.`, 'msg-system');
+        return;
+      }
+
+      // Display user message
+      appendMessage(`&gt; ${text}`, 'msg-user');
+
+      // Evaluate answer
+      const qObj = examData[currentInput].questions[currentQIndex];
+      const lower = text.toLowerCase();
+      const matchCount = qObj.ideal.filter(keyword => lower.includes(keyword)).length;
+
+      let scoreDelta = 0;
+      if (matchCount >= 2 || (qObj.ideal.length <= 2 && matchCount >= 1)) {
+        appendMessage(qObj.replyGood, 'msg-examiner');
+        scoreDelta = 1;
+      } else {
+        appendMessage(qObj.replyPartial, 'msg-examiner');
+        scoreDelta = 0.5;
+      }
+      userScore += scoreDelta;
+
+      currentQIndex++;
+      if (currentQIndex < 5) {
+        setTimeout(() => {
+          appendMessage(examData[currentInput].questions[currentQIndex].q, 'msg-question');
+        }, 500);
+      } else {
+        examFinished = true;
+        setTimeout(() => {
+          const finalScore = Math.min(5, Math.round(userScore));
+          appendMessage(`Score: ${finalScore}/5. ${qObj.revision}`, 'msg-score');
+        }, 600);
+      }
+    }
+
+    btnSend.addEventListener('click', handleUserInput);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUserInput();
+    });
+    btnRestartSession.addEventListener('click', () => startTestInput(1));
+  </script>
+</body>
+</html>

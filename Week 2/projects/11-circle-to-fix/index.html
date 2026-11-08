@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle to Fix - Interactive Testbed & Bug Prompter</title>
+  <style>
+    :root {
+      --primary: #ef4444;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    header {
+      background: var(--card);
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      background: #090d16;
+      padding: 0.3rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .tool-btn {
+      padding: 0.4rem 0.75rem;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .tool-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+    }
+
+    .instructions {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .instructions h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .instructions p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    /* Mock pricing page matching PDF Page 13 */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .plan-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-price {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #38bdf8;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-buy {
+      display: inline-block;
+      width: 100%;
+      padding: 0.75rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-buy:hover {
+      background: #2563eb;
+    }
+
+    /* Drawing Canvas Overlay */
+    #drawCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+      cursor: crosshair;
+    }
+
+    /* Prompt modal */
+    .prompt-box {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 380px;
+      background: #090d16;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      padding: 1.25rem;
+      z-index: 100;
+      display: none;
+      animation: popIn 0.2s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .prompt-box.active {
+      display: block;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .prompt-content {
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+      background: #1e293b;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      margin-bottom: 0.75rem;
+      white-space: pre-wrap;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .btn-copy {
+      width: 100%;
+      padding: 0.6rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-copy:hover {
+      background: #dc2626;
+    }
+
+    .toast {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      z-index: 200;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast">Prompt copied to clipboard ✓</div>
+
+  <header>
+    <div class="brand">
+      <span>⭕</span> Circle to Fix
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn active" data-tool="circle">⭕ Circle</button>
+      <button class="tool-btn" data-tool="box">🔲 Box</button>
+      <button class="tool-btn" data-tool="arrow">➡️ Arrow</button>
+      <button class="tool-btn" id="btnClear">🧹 Clear</button>
+    </div>
+    <div style="font-size: 0.8rem; color: #94a3b8;">Shortcut: <kbd style="background:#272727; padding:2px 4px; border-radius:3px;">Ctrl+Shift+X</kbd></div>
+  </header>
+
+  <main id="mainContainer">
+    <canvas id="drawCanvas"></canvas>
+
+    <div class="instructions">
+      <h2>Circle any bug to generate an instant AI coding prompt</h2>
+      <p>Click and drag over any button, card, or text to highlight the issue.</p>
+    </div>
+
+    <!-- Target Elements to Circle -->
+    <div class="pricing-grid">
+      <div class="pricing-card" id="cardStarter">
+        <div class="plan-title">Starter Plan</div>
+        <div class="plan-price">₹299</div>
+        <button class="btn-buy" id="btnBuyStarter">Buy Now</button>
+      </div>
+
+      <div class="pricing-card" id="cardPro">
+        <div class="plan-title">Pro Plan</div>
+        <div class="plan-price">₹799</div>
+        <button class="btn-buy" id="btnBuyPro">Buy Now</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Prompt modal -->
+  <div id="promptBox" class="prompt-box">
+    <div class="prompt-header">
+      <span style="font-weight: 700; color: #38bdf8;">⚡ Coding Agent Prompt</span>
+      <button id="btnClosePrompt" style="background:none; border:none; color:#94a3b8; font-size:1.1rem; cursor:pointer;">×</button>
+    </div>
+    <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.35rem;">Notes:</div>
+    <input type="text" id="userNoteInput" value="Fix button styling and text alignment" style="width:100%; padding:0.4rem; background:#1e293b; border:1px solid var(--border); color:white; border-radius:4px; margin-bottom:0.6rem; font-size:0.85rem;">
+    <div id="promptContent" class="prompt-content"></div>
+    <button id="btnCopyPrompt" class="btn-copy">Copy Full Prompt</button>
+  </div>
+
+  <script>
+    let activeTool = 'circle';
+    let isDrawing = false;
+    let startX = 0, startY = 0;
+    let endX = 0, endY = 0;
+    let lastTargetElement = null;
+
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    const mainContainer = document.getElementById('mainContainer');
+    const promptBox = document.getElementById('promptBox');
+    const promptContent = document.getElementById('promptContent');
+    const userNoteInput = document.getElementById('userNoteInput');
+    const btnCopyPrompt = document.getElementById('btnCopyPrompt');
+    const btnClosePrompt = document.getElementById('btnClosePrompt');
+    const toast = document.getElementById('toast');
+
+    function resizeCanvas() {
+      canvas.width = mainContainer.offsetWidth;
+      canvas.height = mainContainer.offsetHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeTool = btn.dataset.tool;
+      });
+    });
+
+    document.getElementById('btnClear').addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      promptBox.classList.remove('active');
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+      isDrawing = true;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      endX = e.clientX - rect.left;
+      endY = e.clientY - rect.top;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawShape(startX, startY, endX, endY);
+    });
+
+    canvas.addEventListener('mouseup', (e) => {
+      if (!isDrawing) return;
+      isDrawing = false;
+      const rect = canvas.getBoundingClientRect();
+      endX = e.clientX - rect.left;
+      endY = e.clientY - rect.top;
+
+      // Find element beneath center of drawing
+      const midX = (startX + endX) / 2;
+      const midY = (startY + endY) / 2;
+      
+      canvas.style.pointerEvents = 'none';
+      const el = document.elementFromPoint(rect.left + midX, rect.top + midY);
+      canvas.style.pointerEvents = 'auto';
+
+      lastTargetElement = el || document.getElementById('btnBuyStarter');
+      buildPrompt();
+    });
+
+    function drawShape(x1, y1, x2, y2) {
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
+
+      if (activeTool === 'circle') {
+        const radiusX = Math.abs(x2 - x1) / 2;
+        const radiusY = Math.abs(y2 - y1) / 2;
+        const centerX = Math.min(x1, x2) + radiusX;
+        const centerY = Math.min(y1, y2) + radiusY;
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fill();
+      } else if (activeTool === 'box') {
+        ctx.beginPath();
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+      } else if (activeTool === 'arrow') {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        // Arrow head
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - 15 * Math.cos(angle - Math.PI / 6), y2 - 15 * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - 15 * Math.cos(angle + Math.PI / 6), y2 - 15 * Math.sin(angle + Math.PI / 6));
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+      }
+    }
+
+    function buildPrompt() {
+      const tag = lastTargetElement.tagName.toLowerCase();
+      const id = lastTargetElement.id ? `#${lastTargetElement.id}` : '';
+      const cls = lastTargetElement.className ? `.${lastTargetElement.className.split(' ').join('.')}` : '';
+      const selector = `${tag}${id}${cls}`;
+      const note = userNoteInput.value.trim();
+
+      const text = `Fix ${selector}: ${note}.\nElement OuterHTML:\n${lastTargetElement.outerHTML}\nScreenshot attached.`;
+      promptContent.textContent = text;
+      promptBox.classList.add('active');
+    }
+
+    userNoteInput.addEventListener('input', buildPrompt);
+    btnClosePrompt.addEventListener('click', () => promptBox.classList.remove('active'));
+
+    btnCopyPrompt.addEventListener('click', () => {
+      navigator.clipboard.writeText(promptContent.textContent);
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2500);
+    });
+  </script>
+</body>
+</html>

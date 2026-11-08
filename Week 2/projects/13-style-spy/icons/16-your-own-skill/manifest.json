@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Your Own Skill",
+  "version": "1.0.0",
+  "description": "A custom Chrome extension built as a college CS project. Define your own skill or utility tool.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Your Own Skill"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

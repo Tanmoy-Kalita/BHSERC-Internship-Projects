@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenAI Internship · Week 2 — All 17 Projects Dashboard</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --panel: #131b2e;
+      --card: #1c2640;
+      --border: #2a3859;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #10b981;
+      --orange: #f97316;
+      --purple: #a855f7;
+      --red: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+    }
+
+    .header-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .title-group h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-group p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    .stats-badge-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .stat-pill {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .section-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .tag-a { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.4); }
+    .tag-b { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .tag-c { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .tag-d { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .section-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .project-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .project-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-summary {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .feature-checklist {
+      list-style: none;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-bottom: 1.25rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .feature-checklist li::before {
+      content: "✓ ";
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .launch-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.65rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+
+    .launch-btn:hover {
+      background: var(--accent);
+      color: #040711;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="title-group">
+        <h1>GenAI Internship · Week 2 Projects</h1>
+        <p>Bharat Space Education Research Centre · Instructor: Karan Bagul · 17/17 Projects Built & Verified</p>
+      </div>
+      <div class="stats-badge-row">
+        <div class="stat-pill">
+          <div class="stat-number">17 / 17</div>
+          <div class="stat-label">Total Built</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-number">4 / 4</div>
+          <div class="stat-label">Sections</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Offline Ready</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Section A: Web tools -->
+    <section>
+      <div class="section-header">
+        <span class="section-tag tag-a">Section A</span>
+        <h2 class="section-title">Web Tools</h2>
+        <span class="section-desc">Useful software that runs in a browser, with files staying on your laptop.</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Project 1 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 01</span>
+              <span class="status-badge">Functional · Offline</span>
+            </div>
+            <h3 class="project-name">PDF Studio</h3>
+            <p class="project-summary">Complete offline PDF manipulation suite featuring 29 tools across Organise, Edit, Stamp, Convert, and Finish groups.</p>
+            <ul class="feature-checklist">
+              <li>Organise: merge, split, reorder, rotate, crop</li>
+              <li>Edit: redact, text, shapes, whiteout, signatures</li>
+              <li>Stamp: watermark, page numbers, header/footer</li>
+              <li>Local vendor libraries (works with Wi-Fi off)</li>
+            </ul>
+          </div>
+          <a href="projects/1-pdf-studio/index.html" class="launch-btn" target="_blank">🚀 Launch PDF Studio</a>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 02</span>
+              <span class="status-badge">Functional · Offline</span>
+            </div>
+            <h3 class="project-name">Form Photo Fixer</h3>
+            <p class="project-summary">Prepares passport photos and signatures to match strict government exam size and KB requirements in one click.</p>
+            <ul class="feature-checklist">
+              <li>Presets: UPSC, SSC, JEE, NEET, Passport</li>
+              <li>Interactive face guide oval crop overlay</li>
+              <li>Canvas compression under exact KB limits</li>
+              <li>Custom presets & dual photo/signature download</li>
+            </ul>
+          </div>
+          <a href="projects/2-form-photo-fixer/index.html" class="launch-btn" target="_blank">🚀 Launch Photo Fixer</a>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 03</span>
+              <span class="status-badge">Functional · Offline</span>
+            </div>
+            <h3 class="project-name">Resume Builder</h3>
+            <p class="project-summary">Live A4 resume generator with 3 distinct templates, drag-and-drop section reordering, and clean 2-page print export.</p>
+            <ul class="feature-checklist">
+              <li>Live reactive A4 preview panel</li>
+              <li>3 Templates: Modern, Classic, Minimal</li>
+              <li>HTML5 Drag-and-drop section reordering</li>
+              <li>Save data to JSON file and reload anytime</li>
+            </ul>
+          </div>
+          <a href="projects/3-resume-builder/index.html" class="launch-btn" target="_blank">🚀 Launch Resume Builder</a>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 04</span>
+              <span class="status-badge">Functional · Offline</span>
+            </div>
+            <h3 class="project-name">CBT Mock Test Engine</h3>
+            <p class="project-summary">Real computer-based exam simulator with countdown timer, auto-submit, subject navigation, and JEE +4/-1 marking.</p>
+            <ul class="feature-checklist">
+              <li>Refresh mid-test preserves answers & timer</li>
+              <li>Question palette (answered, review, unvisited)</li>
+              <li>Includes 2 sample test files (JEE & NEET)</li>
+              <li>Detailed score, accuracy, and time-per-question analysis</li>
+            </ul>
+          </div>
+          <a href="projects/4-cbt-mock-test/index.html" class="launch-btn" target="_blank">🚀 Launch Mock Test Engine</a>
+        </div>
+
+        <!-- Project 5 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 05</span>
+              <span class="status-badge">Functional · Offline</span>
+            </div>
+            <h3 class="project-name">Scribbly Notes</h3>
+            <p class="project-summary">Converts typed revision notes into pretty, natural handwritten notebook pages with organic line variations.</p>
+            <ul class="feature-checklist">
+              <li>3 handwriting styles, 3 ink colors, 3 paper styles</li>
+              <li>Natural baseline wobble and character jitter</li>
+              <li>Multi-page flow with no cut-off lines</li>
+              <li>Direct image and PDF export</li>
+            </ul>
+          </div>
+          <a href="projects/5-scribbly-notes/index.html" class="launch-btn" target="_blank">🚀 Launch Scribbly Notes</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section B: Phone apps and games -->
+    <section>
+      <div class="section-header">
+        <span class="section-tag tag-b">Section B</span>
+        <h2 class="section-title">Phone Apps & Games</h2>
+        <span class="section-desc">PWA mobile applications and games with offline flight mode support.</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Project 6 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 06</span>
+              <span class="status-badge">PWA · Flight Mode</span>
+            </div>
+            <h3 class="project-name">Reel Monster</h3>
+            <p class="project-summary">An animated monster tracker that counts reels watched, grows bigger, and shows humorous commentary on lost time.</p>
+            <ul class="feature-checklist">
+              <li>Level 1 (manual tap) and Level 2 (auto-count)</li>
+              <li>Monster evolves and speaks funny lines</li>
+              <li>Today's time lost & 7-day historical bar chart</li>
+              <li>Survives phone restarts via localStorage</li>
+            </ul>
+          </div>
+          <a href="projects/6-reel-monster/index.html" class="launch-btn" target="_blank">🚀 Launch Reel Monster</a>
+        </div>
+
+        <!-- Project 7 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 07</span>
+              <span class="status-badge">PWA · Flight Mode</span>
+            </div>
+            <h3 class="project-name">Bill Book</h3>
+            <p class="project-summary">Offline billing system for local merchants with item catalog, tax/discount calculation, and scannable UPI QR codes.</p>
+            <ul class="feature-checklist">
+              <li>Bundled local QR code generator (flight mode ready)</li>
+              <li>Dynamic UPI deep link for exact amount</li>
+              <li>Export invoice as high-res PNG image for WhatsApp</li>
+              <li>Daily sales total and bill history ledger</li>
+            </ul>
+          </div>
+          <a href="projects/7-bill-book/index.html" class="launch-btn" target="_blank">🚀 Launch Bill Book</a>
+        </div>
+
+        <!-- Project 8 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 08</span>
+              <span class="status-badge">PWA · 60 FPS Game</span>
+            </div>
+            <h3 class="project-name">Auto Rally</h3>
+            <p class="project-summary">Fast-paced auto-rickshaw racing game on HTML5 canvas with keyboard and touch controls, coins, power-ups, and audio.</p>
+            <ul class="feature-checklist">
+              <li>Looping circuit with camera following auto</li>
+              <li>Keyboard (WASD/arrows) & mobile on-screen controls</li>
+              <li>Coins, obstacles, nitro speed boost, and shields</li>
+              <li>3-lap countdown timer, high-score, Web Audio sounds</li>
+            </ul>
+          </div>
+          <a href="projects/8-auto-rally/index.html" class="launch-btn" target="_blank">🚀 Launch Auto Rally</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section C: Chrome extensions -->
+    <section>
+      <div class="section-header">
+        <span class="section-tag tag-c">Section C</span>
+        <h2 class="section-title">Chrome Extensions</h2>
+        <span class="section-desc">Manifest V3 extensions equipped with browser-preview testbed shims.</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Project 9 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 09</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">YouTube Focus Board</h3>
+            <p class="project-summary">Focus gatekeeper that hides Shorts, algorithmic recommendations, and comments, with timestamped lecture notes.</p>
+            <ul class="feature-checklist">
+              <li>60-minute "Why are you here?" intention gate</li>
+              <li>Switches to hide Shorts, comments, suggestions</li>
+              <li>Interactive timestamped study notes</li>
+              <li>Tracks daily study time</li>
+            </ul>
+          </div>
+          <a href="projects/9-youtube-focus-board/index.html" class="launch-btn" target="_blank">🚀 Launch Focus Board Testbed</a>
+        </div>
+
+        <!-- Project 10 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 10</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">Job Clipper</h3>
+            <p class="project-summary">1-click internship and job clipper from job boards into a 4-column drag-and-drop Kanban tracking board with CSV export.</p>
+            <ul class="feature-checklist">
+              <li>Scrapes role, company, URL, deadline</li>
+              <li>Drag cards across Saved, Applied, Interview, Result</li>
+              <li>Deadline approaching notification alerts</li>
+              <li>Instant search and spreadsheet CSV download</li>
+            </ul>
+          </div>
+          <a href="projects/10-job-clipper/index.html" class="launch-btn" target="_blank">🚀 Launch Job Clipper Board</a>
+        </div>
+
+        <!-- Project 11 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 11</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">Circle to Fix</h3>
+            <p class="project-summary">Draw a circle, box, or arrow over any web element to inspect its selector and copy an instant bug fix prompt for an AI agent.</p>
+            <ul class="feature-checklist">
+              <li>Keyboard shortcut (Ctrl+Shift+X) drawing mode</li>
+              <li>Circle, rectangle, and arrow annotation tools</li>
+              <li>Deep DOM selector and HTML snippet extraction</li>
+              <li>1-click formatted coding agent prompt generator</li>
+            </ul>
+          </div>
+          <a href="projects/11-circle-to-fix/index.html" class="launch-btn" target="_blank">🚀 Launch Circle to Fix</a>
+        </div>
+
+        <!-- Project 12 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 12</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">Chat Saver</h3>
+            <p class="project-summary">Exports conversations from ChatGPT and Claude as formatted Markdown or PDF while preserving code blocks and tables.</p>
+            <ul class="feature-checklist">
+              <li>Preserves headings, bullet lists, tables, syntax code</li>
+              <li>Full chat or selective message extraction</li>
+              <li>Automatic file naming from chat topic</li>
+              <li>100% private, zero external server transmissions</li>
+            </ul>
+          </div>
+          <a href="projects/12-chat-saver/index.html" class="launch-btn" target="_blank">🚀 Launch Chat Saver Studio</a>
+        </div>
+
+        <!-- Project 13 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 13</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">Style Spy</h3>
+            <p class="project-summary">Inspects any web page to rank colors by visual dominance, extracts font hierarchies, and exports CSS variable design kits.</p>
+            <ul class="feature-checklist">
+              <li>Analyzes computed styles of all visible DOM elements</li>
+              <li>Ranked color palette with click-to-copy hex codes</li>
+              <li>Typography catalog (weights, sizes, families)</li>
+              <li>Export design kit as reusable CSS variables</li>
+            </ul>
+          </div>
+          <a href="projects/13-style-spy/index.html" class="launch-btn" target="_blank">🚀 Launch Style Spy Studio</a>
+        </div>
+
+        <!-- Project 14 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 14</span>
+              <span class="status-badge">Manifest V3 · Extension</span>
+            </div>
+            <h3 class="project-name">Tab Goblin</h3>
+            <p class="project-summary">Memory manager that feeds on ignored tabs by putting them to sleep via tab discard while keeping forms and active work safe.</p>
+            <ul class="feature-checklist">
+              <li>Animated goblin with mood shifts based on tab count</li>
+              <li>Sorts tabs by inactivity age</li>
+              <li>Protected Keep List for vital ongoing tasks</li>
+              <li>Session save and 1-click restore functionality</li>
+            </ul>
+          </div>
+          <a href="projects/14-tab-goblin/index.html" class="launch-btn" target="_blank">🚀 Launch Tab Goblin Studio</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section D: Video, skills and design -->
+    <section>
+      <div class="section-header">
+        <span class="section-tag tag-d">Section D</span>
+        <h2 class="section-title">Video, Skills & Design</h2>
+        <span class="section-desc">Video editing pipeline, agent skill definition, and side-by-side design redesign.</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Project 15 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 15</span>
+              <span class="status-badge">Functional Video Studio</span>
+            </div>
+            <h3 class="project-name">One-Minute Reel Cut</h3>
+            <p class="project-summary">Transforms 5-minute raw lectures into 60-second vertical 9:16 reels with silence cutting, face crop, and burned-in captions.</p>
+            <ul class="feature-checklist">
+              <li>Automatic silence & filler word removal with edit plan</li>
+              <li>Interactive timeline: red stays, hatched gets cut</li>
+              <li>9:16 vertical crop with face framing simulation</li>
+              <li>Burned-in captions with synchronized word highlighting</li>
+            </ul>
+          </div>
+          <a href="projects/15-one-minute-reel-cut/index.html" class="launch-btn" target="_blank">🚀 Launch Reel Cut Studio</a>
+        </div>
+
+        <!-- Project 16 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 16</span>
+              <span class="status-badge">Agent Skill Verified</span>
+            </div>
+            <h3 class="project-name">Your Own Skill (/viva)</h3>
+            <p class="project-summary">Oral examination agent skill with SKILL.md specification, tested on 3 distinct subjects with rigorous 1-by-1 viva questioning.</p>
+            <ul class="feature-checklist">
+              <li>Complete SKILL.md following Antigravity skill standard</li>
+              <li>Tested on 3 inputs: Thermodynamics, OS, Algorithms</li>
+              <li>Interactive terminal simulator with 5-point scoring</li>
+              <li>Side-by-side audit of output with vs without skill</li>
+            </ul>
+          </div>
+          <a href="projects/16-your-own-skill/index.html" class="launch-btn" target="_blank">🚀 Launch Viva Skill Runner</a>
+        </div>
+
+        <!-- Project 17 -->
+        <div class="project-card">
+          <div>
+            <div class="card-top">
+              <span class="project-num">Project 17</span>
+              <span class="status-badge">Design Audit Passed</span>
+            </div>
+            <h3 class="project-name">Same Page, New Design</h3>
+            <p class="project-summary">Step 1 (before.html without design skill) and Step 3 (after.html with design skill) with 96/96 verified identical words.</p>
+            <ul class="feature-checklist">
+              <li>before.html (raw unstyled) & after.html (modern responsive)</li>
+              <li>Word match verification: 100% (96/96 words identical)</li>
+              <li>Phone simulator mode (375px viewport test)</li>
+              <li>3 named design rationale notes documented</li>
+            </ul>
+          </div>
+          <a href="projects/17-same-page-new-design/index.html" class="launch-btn" target="_blank">🚀 Launch Design Studio</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

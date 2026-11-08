@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Saver - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <header class="options-header">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>Chat Saver Settings</span>
+      </div>
+    </header>
+
+    <main class="options-main">
+      <!-- General Settings -->
+      <section class="settings-section">
+        <h2>General</h2>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Theme</h3>
+            <p>Choose the color theme for the extension</p>
+          </div>
+          <select id="settingTheme" class="setting-select">
+            <option value="system">System Default</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Default Export Format</h3>
+            <p>Format used when exporting conversations</p>
+          </div>
+          <select id="settingExportFormat" class="setting-select">
+            <option value="markdown">Markdown (.md)</option>
+            <option value="json">JSON (.json)</option>
+            <option value="html">HTML (.html)</option>
+            <option value="csv">CSV (.csv)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Max Conversations</h3>
+            <p>Maximum conversations to keep (older ones auto-removed)</p>
+          </div>
+          <input type="number" id="settingMaxConvs" class="setting-input" min="100" max="10000" step="100" value="1000">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>
+              <label class="toggle-label">
+                <input type="checkbox" id="settingAutoSave">
+                <span class="toggle-slider"></span>
+              </label>
+              Auto-save Conversations
+            </h3>
+            <p>Automatically save conversations when visiting supported sites (experimental)</p>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>
+              <label class="toggle-label">
+                <input type="checkbox" id="settingShowBadge">
+                <span class="toggle-slider"></span>
+              </label>
+              Show Badge on Toolbar Icon
+            </h3>
+            <p>Display conversation count on the extension icon</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Storage -->
+      <section class="settings-section">
+        <h2>Storage & Data</h2>
+
+        <div class="storage-info" id="storageInfo">
+          <div class="storage-stat">
+            <span class="storage-value" id="statConversations">0</span>
+            <span class="storage-label">Conversations</span>
+          </div>
+          <div class="storage-stat">
+            <span class="storage-value" id="statStorage">0 KB</span>
+            <span class="storage-label">Storage Used</span>
+          </div>
+          <div class="storage-stat">
+            <span class="storage-value" id="statPlatforms">0</span>
+            <span class="storage-label">Platforms</span>
+          </div>
+        </div>
+
+        <div class="setting-actions">
+          <button id="btnExportAll" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export All Data
+          </button>
+          <button id="btnImportData" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Import Data
+          </button>
+          <button id="btnClearAll" class="btn btn-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear All Data
+          </button>
+        </div>
+      </section>
+
+      <!-- Supported Platforms -->
+      <section class="settings-section">
+        <h2>Supported Platforms</h2>
+        <p class="section-desc">Chat Saver works on these AI chat platforms:</p>
+
+        <div class="platform-grid" id="platformGrid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts -->
+      <section class="settings-section">
+        <h2>Keyboard Shortcuts</h2>
+        <p class="section-desc">Configure keyboard shortcuts (managed by browser):</p>
+
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>
+            <span>Save current conversation</span>
+          </div>
+        </div>
+        <p class="shortcut-note">To change shortcuts, visit <code>chrome://extensions/shortcuts</code></p>
+      </section>
+
+      <!-- About -->
+      <section class="settings-section">
+        <h2>About</h2>
+        <div class="about-info">
+          <div class="about-item">
+            <strong>Version:</strong> 1.0.0
+          </div>
+          <div class="about-item">
+            <strong>Manifest:</strong> V3
+          </div>
+          <div class="about-item">
+            <strong>Permissions:</strong> Storage, Side Panel, Scripting, Downloads
+          </div>
+          <div class="about-item">
+            <strong>Data:</strong> Stored locally in your browser
+          </div>
+        </div>
+        <div class="about-links">
+          <a href="https://github.com/chatsaver" target="_blank">GitHub Repository</a>
+          <a href="https://github.com/chatsaver/issues" target="_blank">Report Issue</a>
+          <a href="https://github.com/chatsaver/blob/main/PRIVACY.md" target="_blank">Privacy Policy</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="options-footer">
+      <button id="btnSave" class="btn btn-primary">Save Settings</button>
+      <button id="btnReset" class="btn btn-secondary">Reset to Defaults</button>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+      <div class="modal" id="modalContent"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

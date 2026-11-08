@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 21cm;
+            margin: 0 auto;
+        }
+        .template1 { font-family: Arial, sans-serif; border: 1px solid #333; }
+        .template2 { font-family: Georgia, serif; border: 1px solid #666; }
+        .template3 { font-family: Helvetica, sans-serif; border: 1px solid #999; }
+    </style>
+</head>
+<body>
+    <h1>Resume Builder - Data stays on your device</h1>
+
+    <form id="resume-form">
+        <div>
+            <label>Name: <input type="text" name="name" required></label>
+        </div>
+        <div>
+            <label>Email: <input type="email" name="email" required></label>
+        </div>
+        <div>
+            <label>Skills: <input type="text" name="skills" placeholder="Python, SQL, etc."></label>
+        </div>
+        <div>
+            <label>Education: <input type="text" name="education" placeholder="University, Degree"></label>
+        </div>
+        <div>
+            <label>Projects: <input type="text" name="projects" placeholder="Project names"></label>
+        </div>
+
+        <h3>Templates</h3>
+        <div>
+            <input type="radio" name="template" value="1" checked> Template 1 (Arial)<br>
+            <input type="radio" name="template" value="2"> Template 2 (Georgia)<br>
+            <input type="radio" name="template" value="3"> Template 3 (Helvetica)<br>
+        </div>
+
+        <div id="preview" style="border: 1px solid #ccc; padding: 1min; min-height: 29.7cm; width: 21cm;">
+            <h2>Preview: Your Resume</h2>
+            <p><strong>Name:</strong> <span id="preview-name">[Enter name]</span></p>
+            <p><strong>Email:</strong> <span id="preview-email">[Enter email]</span></p>
+            <p><strong>Skills:</strong> <span id="preview-skills">[Enter skills]</span></p>
+            <p><strong>Education:</strong> <span id="preview-education">[Enter education]</span></p>
+            <p><strong>Projects:</strong> <span id="preview-projects">[Enter projects]</span></p>
+        </div>
+
+        <button type="button" onclick="exportPDF()">Export as PDF</button>
+        <button type="button" onclick="saveData()">Save Data</button>
+        <input type="file" id="load-data" accept=".json" style="display:none;">
+        <button type="button" onclick="document.getElementById('load-data').click()">Load Data</button>
+    </form>
+
+    <script>
+        function updatePreview() {
+            const name = document.querySelector('input[name="name"]').value;
+            const email = document.querySelector('input[name="email"]').value;
+            const skills = document.querySelector('input[name="skills"]').value;
+            const education = document.querySelector('input[name="education"]').value;
+            const projects = document.querySelector('input[name="projects"]').value;
+
+            document.getElementById('preview-name').textContent = name || '[Enter name]';
+            document.getElementById('preview-email').textContent = email || '[Enter email]';
+            document.getElementById('preview-skills').textContent = skills || '[Enter skills]';
+            document.getElementById('preview-education').textContent = education || '[Enter education]';
+            document.getElementById('preview-projects').textContent = projects || '[Enter projects]';
+        }
+
+        // Live preview update
+        document.querySelectorAll('input, textarea').forEach(el =>
+            el.addEventListener('input', updatePreview)
+        );
+
+        // Export to PDF using browser print
+        function exportPDF() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Resume PDF</title>');
+            printWindow.document.write('<style>@page { size: A4; margin: 2cm; } body { font-family: Arial, sans-serif; }</style>');
+            printWindow.document.write('</head><body>');
+
+            const template = document.querySelector('input[name="template"]:checked').value;
+            printWindow.document.write(document.getElementById('preview').innerHTML);
+
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Save data as JSON
+        function saveData() {
+            const data = {
+                name: document.querySelector('input[name="name"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                skills: document.querySelector('input[name="skills"]').value,
+                education: document.querySelector('input[name="education"]').value,
+                projects: document.querySelector('input[name="projects"]').value,
+                template: document.querySelector('input[name="template"]:checked')?.value
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resume-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Load data from JSON
+        document.getElementById('load-data').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = JSON.parse(e.target.result);
+                document.querySelector('input[name="name"]').value = data.name || '';
+                document.querySelector('input[name="email"]').value = data.email || '';
+                document.querySelector('input[name="skills"]').value = data.skills || '';
+                document.querySelector('input[name="education"]').value = data.education || '';
+                document.querySelector('input[name="projects"]').value = data.projects || '';
+                updatePreview();
+            };
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>

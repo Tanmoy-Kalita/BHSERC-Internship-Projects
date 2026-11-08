@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Focus Board</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 340px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #202124;
+    }
+    .header {
+      background: linear-gradient(135deg, #065fd4 0%, #1a73e8 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon { font-size: 24px; }
+    .header-title { font-weight: 600; font-size: 16px; }
+    .header-subtitle { font-size: 11px; opacity: 0.9; }
+
+    .content { padding: 16px; }
+    .section { margin-bottom: 20px; }
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5f6368;
+      margin-bottom: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-info { display: flex; flex-direction: column; gap: 2px; }
+    .toggle-label { font-size: 14px; font-weight: 500; }
+    .toggle-desc { font-size: 11px; color: #5f6368; }
+
+    .toggle {
+      width: 44px; height: 24px;
+      background: #e0e0e0; border-radius: 12px;
+      position: relative; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle.active { background: #065fd4; }
+    .toggle::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; background: white; border-radius: 50%;
+      transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle.active::after { transform: translateX(20px); }
+
+    .btn {
+      width: 100%; padding: 10px 16px; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background: #065fd4; color: white; }
+    .btn-primary:hover { background: #054bc2; }
+    .btn-secondary { background: #f1f3f4; color: #333; }
+    .btn-secondary:hover { background: #e8eaed; }
+    .btn-danger { background: #fce8e6; color: #d93025; }
+    .btn-danger:hover { background: #fad2cf; }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin-top: 8px;
+    }
+    .stat-card {
+      background: #f8f9fa; border-radius: 10px; padding: 12px; text-align: center;
+    }
+    .stat-value { font-size: 20px; font-weight: 700; color: #065fd4; }
+    .stat-label { font-size: 10px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .divider { height: 1px; background: #f1f3f4; margin: 16px 0; }
+
+    .footer {
+      padding: 12px 16px; border-top: 1px solid #f1f3f4;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-link {
+      font-size: 11px; color: #065fd4; text-decoration: none;
+    }
+    .version { font-size: 10px; color: #9aa0a6; }
+
+    .not-youtube {
+      text-align: center; padding: 40px 20px; color: #5f6368;
+    }
+    .not-youtube-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="header-icon">🎯</span>
+    <div>
+      <div class="header-title">YouTube Focus Board</div>
+      <div class="header-subtitle" id="statusText">Loading...</div>
+    </div>
+  </div>
+
+  <div class="content" id="mainContent">
+    <div class="not-youtube" id="notYouTube" style="display: none;">
+      <div class="not-youtube-icon">📺</div>
+      <div>Open YouTube to use Focus Board</div>
+    </div>
+
+    <div id="youtubeContent" style="display: none;">
+      <div class="section">
+        <div class="section-title">Focus Mode</div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Distraction Free</span>
+            <span class="toggle-desc">Hide recommendations, comments, shorts</span>
+          </div>
+          <div class="toggle" id="toggleFocus" onclick="toggle('focus')"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Theater Mode</span>
+            <span class="toggle-desc">Cinematic viewing in focus mode</span>
+          </div>
+          <div class="toggle" id="toggleTheater" onclick="toggle('theater')"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tools</div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Timestamped Notes</span>
+            <span class="toggle-desc">Take notes synced to video timeline</span>
+          </div>
+          <div class="toggle" id="toggleNotes" onclick="toggle('notes')"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Watch Stats</span>
+            <span class="toggle-desc">Track session time & total learning</span>
+          </div>
+          <div class="toggle" id="toggleStats" onclick="toggle('stats')"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title">Break Reminders</div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">25 min (Pomodoro)</span>
+            <span class="toggle-desc">Default break interval</span>
+          </div>
+          <div class="toggle active" id="break25" onclick="setBreak(25)"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">50 min (Deep Work)</span>
+            <span class="toggle-desc">Longer focus sessions</span>
+          </div>
+          <div class="toggle" id="break50" onclick="setBreak(50)"></div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Custom</span>
+            <span class="toggle-desc">Set your own interval</span>
+          </div>
+          <div class="toggle" id="breakCustom" onclick="setBreakCustom()"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title">Session Stats</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statSession">0m</div>
+            <div class="stat-label">This Session</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statTotal">0m</div>
+            <div class="stat-label">Total Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statNotes">0</div>
+            <div class="stat-label">Notes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <button class="btn btn-primary" onclick="exportSession()">📤 Export Session</button>
+        <button class="btn btn-secondary" style="margin-top: 8px;" onclick="openSidePanel()">📋 Open Side Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a class="footer-link" href="https://github.com" target="_blank">Help & Feedback</a>
+    <span class="version" id="versionText">v1.0.0</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

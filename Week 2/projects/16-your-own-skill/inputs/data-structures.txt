@@ -1,0 +1,6 @@
+Data Structures & Algorithms Notes
+Topics: Balanced BST, Heaps, Graph Traversals, Dynamic Programming
+Page 4: AVL Trees maintain balance factor in {-1, 0, 1}. Rotations: LL, RR, LR, RL. Lookups, insertions, deletions are O(log n).
+Page 11: Binary Heaps: Complete binary tree with heap-order property. Array representation: parent at i//2, children at 2i and 2i+1. Build-heap is O(n).
+Page 16: Dijkstra algorithm for single-source shortest paths on non-negative edge weights using priority queue. O((V + E) log V).
+Page 22: Dynamic Programming requires optimal substructure and overlapping subproblems.

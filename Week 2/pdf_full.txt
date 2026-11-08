@@ -1,0 +1,1142 @@
+--- Page 1 ---
+Bharat Space Education Research Centre
+GenAI Internship · Instructor: Karan Bagul
+WEEK 2
+This week is all about building.
+You'll use an AI agent to build apps, tools and extensions that you can really use. Use Claude,
+ChatGPT or any other agent you like.
+17
+Total projects
+4
+Sections
+2
+Minimum to build from each
+section
+8
+Minimum to build in total
+The more you build, the better. If you build all 17, we'd love to see it.
+pdf-studio · offline
+notes-sem4.pdf · 48 pages
+Save PDF
+Organise
+Edit
+Stamp
+Convert
+Finish
+Add text
+Add image
+Highlight
+Draw
+Shapes
+Whiteout
+Redact
+Sign
+Fill forms
+1
+2
+3
+Wi-Fi off · nothing leaves this laptop
+A
+Web tools
+Useful software that runs in a browser, with files staying on
+your laptop.
+Project 1 PDF Studio
+Project 2 Form Photo Fixer
+Project 3 Resume Builder
+Project 4 CBT Mock Test Engine
+Project 5 Scribbly Notes
+Build at least 2 from this section
+Level 1: manual
+Level 2: automatic
+Inside the app
+B
+Phone apps and games
+Apps and games you install and use on a real phone.
+Project 6 Reel Monster
+Project 7 Bill Book
+Project 8 Auto Rally
+Build at least 2 from this section
+C
+Chrome extensions
+Small tools that change how the web works for you.
+Project 9 YouTube Focus Board
+Project 10 Job Clipper
+Project 11 Circle to Fix
+Project 12 Chat Saver
+Project 13 Style Spy
+Project 14 Tab Goblin
+Build at least 2 from this section
+> /viva thermo-notes.pdf
+Q2. Why can no engine beat Carnot efficiency?
+> Because of friction
+Examiner: Partly. Friction lowers real engines, but what about an ideal
+one?
+Score: 3/5. 
+D
+Video, skills and design
+Use an agent to edit video, teach it a skill and redesign a
+page.
+Project 15 One-Minute Reel Cut
+Project 16 Your Own Skill
+Project 17 Same Page, New Design
+Build at least 2 from this section
+Thermodynamics
+R. Sharma
+DRAFT
+Reels
+12
+Tap me +1
+Shorts
+64
+Yum! Your evening
+tastes great.
+Today
+143
+reels · 1h lost
+Last 7 days
+Burp. Your
+homework says hi.
+any-job-site.com/role
+Data Analyst Intern
+Saved
+Acme
+Nova
+Applied
+Zentra
+Interview
+Bluebird
+Save this job
+Data Analyst Intern
+Nova Labs
+Deadline: 12 Nov
+Add to board
+Reading notes. Asking 5 questions, one at a time.
+Revise page 14.
+
+
+--- Page 2 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 2 of 19
+Start
+READ THIS FIRST
+You learn the most by building.
+The prompts are up to you, because learning to guide an agent is what we want you to take
+away.
+Every project page looks like this
+1
+Project number
+Each project has its own number.
+2
+Imagine this
+Why you would want this app.
+3
+Preview
+An example of how it could look.
+4
+What to build
+The features it must have.
+5
+Done when
+Tick these off as you test.
+6
+Small hint
+A good place to start.
+How building goes
+1
+Plan
+Get clear first. Use
+/grill-me or plan
+mode, or ask your
+agent to ask you
+clarifying questions.
+2
+Prompt
+Say what you want,
+the limits, and how
+the agent should
+check it.
+3
+Build
+Let your AI agent
+build a few features
+in a project folder.
+4
+Test
+Go through the
+project's “Done
+when” list yourself.
+5
+Improve
+Tell it what broke,
+then add the next
+features. Repeat.
+Keep these in mind
+Use any AI agent
+Claude, ChatGPT or any other one
+you like.
+Just make it work offline
+If it runs on your system without a
+paid API or login, you're good.
+Make it look good
+Clear layout, readable text, and
+buttons that say what they do.
+Keep every prompt
+Save them in order in prompts.md
+as you build.
+Use harmless files
+Test with fake or sample data, not
+your real documents.
+Know what you built
+Use /teach, or ask your agent, until
+you can explain it yourself.
+Stuck? That's normal. Take a screenshot, give it to your agent, and ask what is going wrong and why.
+Then ask it to fix it.
+1
+2
+3
+4
+5
+6
+
+
+--- Page 3 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 3 of 19
+PROJECT
+1
+SECTION A · WEB TOOLS
+PDF Studio
+A full PDF app on your own laptop, with no uploads, no account and no
+internet needed.
+Tough
+Imagine this
+You need to merge your marksheets and sign a form tonight. The free site asks for money at the last step,
+and your documents are now on someone else's server. So make your own PDF app that never uploads
+anything.
+pdf-studio · offline
+notes-sem4.pdf · 48 pages
+Save PDF
+Organise
+Edit
+Stamp
+Convert
+Finish
+Add text
+Add image
+Highlight
+Draw
+Shapes
+Whiteout
+Redact
+Sign
+Fill forms
+1
+2
+3
+4
+Wi-Fi off · nothing leaves this laptop
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build: 29 tools
+1
+Organise: Merge, split, reorder, rotate,
+delete, duplicate, extract pages, insert blank
+page, crop
+2
+Edit: Add text, add image, highlight, draw,
+shapes, whiteout, redact, sign, fill forms
+3
+Stamp: Watermark, page numbers, header
+and footer, date stamp
+4
+Convert: Images to PDF, PDF to images,
+PDF to text
+5
+Finish: Compress, edit details, remove
+details, compare two PDFs
+Go further: Password lock and OCR for scanned pages.
+Done when
+With Wi-Fi off, edit a 50-page PDF using
+tools from all 5 groups.
+The saved file opens correctly in another
+PDF reader.
+Redacted text can't be selected or found by
+search afterwards.
+Compress shows the file size before and
+after.
+Small hint
+Start with only merge, reorder and save, and test them on a real PDF. Then add one tool group per prompt. One
+group at a time works better than one giant prompt.
+Thermodynamics
+R. Sharma
+DRAFT
+
+
+--- Page 4 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 4 of 19
+PROJECT
+2
+SECTION A · WEB TOOLS
+Form Photo Fixer
+Get a photo and signature ready for exam and job application forms in
+one step.
+Medium
+Imagine this
+The exam form closes in an hour and keeps rejecting your photo because of its size. Three random
+websites later, the photo is blurry or stretched. Build the tool you wish you had that night.
+form-photo.app
+Form preset
+Exam form A ▾
+Size needed
+3.5 × 4.5 cm
+File size
+39 KB of 50 KB limit
+✓ Ready to upload
++ Signature
+Download photo
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Upload a photo and a signature.
+2
+At least 3 form presets, each with the
+required size and KB limit.
+3
+Crop with a face guide.
+4
+Compress to just under the KB limit.
+5
+Add your own custom preset.
+6
+Download the finished files.
+Done when
+Output meets the rules of 3 real forms. Link
+their official notices in your report.
+Your computer's file details confirm the size
+in KB.
+A large phone photo works with Wi-Fi off.
+Small hint
+Start with upload, crop and download. Then ask your agent to lower the image quality step by step until the file
+is just under the limit.
+
+
+--- Page 5 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 5 of 19
+PROJECT
+3
+SECTION A · WEB TOOLS
+Resume Builder
+Fill in a form and watch a clean A4 resume build itself. Your data stays
+on your device.
+Medium
+Imagine this
+A company opens applications today. The resume site lets you fill in everything, then asks you to pay to
+download it. Build a resume maker that is yours, free, and keeps your details on your device.
+my-resume.app
+Name
+Riya Sharma
+Skills
+Python, SQL
+Project
+PDF Studio
+Template 2 ▾
+Export PDF
+Riya Sharma
+riya@example.com
+PROJECTS
+SKILLS
+EDUCATION
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A form with a live A4 preview.
+2
+3 templates that look truly different.
+3
+Drag sections into a new order.
+4
+Export as PDF.
+5
+Save your data as a file and load it back.
+Done when
+A long resume breaks cleanly across 2
+pages.
+The text in the PDF can be selected and
+copied.
+Loading the saved file restores everything.
+It works with Wi-Fi off.
+Small hint
+Start with one template and the live preview. Ask your agent to make the page exactly A4, and to export using
+the browser's Print to PDF so the text stays selectable.
+
+
+--- Page 6 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 6 of 19
+PROJECT
+4
+SECTION A · WEB TOOLS
+CBT Mock Test Engine
+A real computer-based exam screen that can run any question file you
+give it.
+Tough
+Imagine this
+Your real exam is on a computer, with a timer and a question palette, but you've only practised from PDFs.
+Build a test screen that feels like the real thing and runs any questions you load.
+mock-test.app
+Physics · Q7 of 15
+⏱ 42:18
+Unit of electric charge?
+A. Volt
+B. Coulomb
+C. Ohm
+D. Tesla
+Mark for review
+Next
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
++4 right, −1
+wrong
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Load questions from a file.
+2
+A countdown timer with auto-submit.
+3
+A question palette showing each question's
+status.
+4
+Mark for review.
+5
+Subject sections, with positive and negative
+marking.
+6
+A result page: score, accuracy and time per
+question.
+Done when
+A refresh mid-test loses nothing, including
+the timer.
+The score matches your hand calculation for
+15 questions.
+A second question file works with no code
+change.
+Small hint
+Start with 5 sample questions in a simple file and one working test screen. Ask your agent to save the answers
+and time left after every click, so a refresh can restore them.
+
+
+--- Page 7 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 7 of 19
+PROJECT
+5
+SECTION A · WEB TOOLS
+Scribbly Notes
+Type plain notes and get pretty hand-drawn notebook pages, ready to
+save.
+Medium
+Imagine this
+Your typed notes are complete, but boring to revise from. You love how neat handwritten notebooks look,
+but rewriting everything would take days. Build an app that turns typed notes into pretty pages.
+scribbly.app
+You type
+Ohm's law: V = IR. Current rises
+with voltage.
+Ohm's law:
+V = IR !
+current rises
+with voltage →
+Pen: blue ▾
+Save image
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A text box with a live notebook page
+preview.
+2
+3 handwriting styles, ink colours and paper
+styles.
+3
+Natural variation, so lines don't look
+machine-made.
+4
+Long notes flow onto new pages.
+5
+Save as images or a PDF.
+Rule: For your own notes only. Never submit its pages as
+handwritten schoolwork.
+Done when
+A 3-page note splits with no line cut in half.
+Fonts are stored in your project, so it works
+with Wi-Fi off.
+Print a page. A friend should find it pleasant
+to read.
+Small hint
+Start with one handwriting font on lined paper. Then ask your agent to vary each word's position, size and
+angle slightly. Keep the font files inside your project.
+
+
+--- Page 8 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 8 of 19
+PROJECT
+6
+SECTION B · PHONE APPS AND GAMES
+Reel Monster
+A cute monster that floats on top of Instagram and YouTube and counts
+every reel you watch.
+Level 1: Medium
+Level 2: Tough
+Imagine this
+You opened Instagram for two minutes. An hour has gone, and you can't say what you watched. Build a
+funny little monster that shows you exactly what all that scrolling cost.
+Level 1: manual
+Level 2: automatic
+Inside the app
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A real Android app you install on your
+phone.
+2
+A cute monster bubble that floats on top of
+Instagram and YouTube.
+3
+A counter on the monster: 1, 2, 3 and up.
+4
+Choose your level. Level 1, manual: tap the
+monster after each reel. Level 2, automatic:
+it counts each new reel itself.
+5
+The monster grows and says funny lines as
+the count rises.
+6
+In the app: today's count, time lost and the
+last 7 days.
+Note: Android only. On an iPhone, choose Projects 7 and
+8 in this section.
+Done when
+The app installs on a real Android phone.
+The monster stays on top of both Instagram
+and YouTube.
+Your count survives a phone restart.
+Level 2 only: over 20 reels, its count is
+within 2 of yours.
+The app itself needs no internet and no
+login.
+Small hint
+Start with a plain Android app that shows a counter, and get it onto your phone. Ask your agent to set up the
+Android tools from the command line, without Android Studio. Then ask for the floating bubble using “display
+over other apps”.
+Reels
+12
+Tap me +1
+Shorts
+64
+Yum! Your evening
+tastes great.
+Today
+143
+reels · 1h lost
+Last 7 days
+Burp. Your
+homework says hi.
+
+
+--- Page 9 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 9 of 19
+PROJECT
+7
+SECTION B · PHONE APPS AND GAMES
+Bill Book
+A billing app for a small shop. Make a bill, show a UPI QR code and share
+it on WhatsApp.
+Medium
+Imagine this
+A neighbourhood shop still writes bills by hand, adds them on a calculator and can't tell you yesterday's
+sales. The network there comes and goes. Build a billing app that keeps working anyway.
+Sharma Stores
+#104
+Rice 2 kg
+₹120
+Oil 1 L
+₹165
+Total
+₹285
+Share on WhatsApp
+Today
+Total sales
+₹4,860
+#104
+₹285
+#103
+₹640
+#102
+₹120
+#101
+₹915
++ New bill
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A shop profile and an item list with prices.
+2
+Bills with quantity, discount and tax.
+3
+A UPI QR code for the exact total.
+4
+Share a bill as an image.
+5
+Bill history and a daily total.
+Done when
+Totals match your hand calculation on 5
+bills.
+It works in flight mode, and old bills stay
+saved.
+A UPI app scans the QR and shows the right
+amount. You don't need to pay.
+It installs on a real phone.
+Small hint
+Start with one bill and correct totals. For the QR, ask your agent to build a UPI payment link from your own UPI
+ID and the bill total, then turn that link into a QR code.
+
+
+--- Page 10 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 10 of 19
+PROJECT
+8
+SECTION B · PHONE APPS AND GAMES
+Auto Rally
+A cute auto-rickshaw racing game that your friends can play on their
+phones.
+Tough
+Imagine this
+Imagine your friends on a train with no network, passing your phone around and trying to beat your lap
+time, on a game you made yourself. Build that game.
+auto-rally.game
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A driveable auto-rickshaw on a looping
+road.
+2
+Keyboard and touch controls.
+3
+Coins, obstacles and at least one power-up.
+4
+3 laps with a timer.
+5
+A best time that stays saved.
+6
+Sound with a mute button.
+Done when
+A full race plays on a real phone in flight
+mode.
+A friend finishes a race with no instructions
+from you.
+Crashes and lap counts feel fair.
+The best time survives a restart.
+Small hint
+Start with the auto moving on a straight road on an HTML canvas. Then add steering, then coins and obstacles,
+then laps. Play it after every step.
+🪙 24
+🪙 24
+Lap 2/3
+Lap 2/3
+0:48
+0:48
+
+
+--- Page 11 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 11 of 19
+PROJECT
+9
+SECTION C · CHROME EXTENSIONS
+YouTube Focus Board
+YouTube with the distractions gone. To open it for fun, you first have to
+type why.
+Medium
+Imagine this
+You open YouTube to watch one lecture. Forty minutes later you're deep in Shorts and the lecture still isn't
+finished. Build an extension that keeps YouTube a place to study.
+youtube.com/watch
+Shorts and comments hidden
+Why are you here?
+Revising thermodynamics
+Study list
+✓ Lecture 1
+▶ Lecture 2
+12:40 · Carnot cycle
+Today: 38 min
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Switches to hide Shorts, recommendations
+and comments.
+2
+A study list of videos.
+3
+Notes linked to timestamps. Click one to
+jump there.
+4
+Time spent today.
+5
+A "Why are you here?" gate that unlocks
+YouTube for 60 minutes.
+Done when
+It keeps working as you move between
+videos without a reload.
+Clicking a note jumps to the right moment.
+Your data survives a Chrome restart.
+A friend installs it using only your guide.
+Small hint
+Start by hiding only Shorts. YouTube changes videos without reloading the page, so ask your agent to re-apply
+your changes whenever the page content changes.
+
+
+--- Page 12 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 12 of 19
+PROJECT
+10
+SECTION C · CHROME EXTENSIONS
+Job Clipper
+On any job page, click once to save it. Every application sits on one
+board.
+Medium
+Imagine this
+You've applied to 20 internships across 6 websites. Now one calls you back, and you can't remember the
+role or find the link. Build the tracker that saves you from that call.
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+One click saves role, company, link and
+deadline.
+2
+Every field can be edited.
+3
+A board: Saved, Applied, Interview and
+Result. Drag cards across.
+4
+A reminder before a deadline.
+5
+Search, plus CSV export.
+Done when
+It works on 3 different job sites.
+When details can't be detected, you can
+type them by hand.
+A deadline reminder really appears.
+The CSV opens correctly in a spreadsheet.
+Small hint
+Start with the board and typing details by hand. Then ask your agent to pre-fill the fields from the job page, and
+keep every field editable.
+any-job-site.com/role
+Data Analyst Intern
+Saved
+Acme
+Nova
+Applied
+Zentra
+Interview
+Bluebird
+Save this job
+Data Analyst Intern
+Nova Labs
+Deadline: 12 Nov
+Add to board
+
+
+--- Page 13 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 13 of 19
+PROJECT
+11
+SECTION C · CHROME EXTENSIONS
+Circle to Fix
+Circle a problem on any web page and get a ready prompt for your
+coding agent.
+Tough
+Imagine this
+You're building with an agent and one button looks wrong. You spend three messages explaining “the
+second card, no, the other button”. Build a tool that lets you just circle it.
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+A keyboard shortcut that starts drawing
+mode.
+2
+Draw a circle, box or arrow over any page.
+3
+Find the page element under your drawing.
+4
+Take a screenshot.
+5
+A note box, then one click copies the full
+prompt.
+Done when
+It works on 5 different websites.
+The copied prompt includes the element's
+code and your note.
+Use it to fix a real bug in one of your own
+projects. Show before and after.
+It sends nothing to any server.
+Small hint
+Start with drawing a box over a page. Then ask your agent to hide the drawing for a moment, find the element
+at its centre, and take the screenshot.
+my-project.app
+Pricing
+₹299
+Buy
+₹799
+Buy
+Prompt copied ✓
+Fix button.buy in .card: text
+overflows on phone. Screenshot
+attached.
+
+
+--- Page 14 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 14 of 19
+PROJECT
+12
+SECTION C · CHROME EXTENSIONS
+Chat Saver
+Save any AI chat as a clean PDF or Markdown file in one click.
+Medium
+Imagine this
+Last month an AI chat gave you the perfect explanation. Today you can't find it, and copying it out breaks
+the code and tables. Build one click that saves it properly.
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Works on at least 2 AI chat websites.
+2
+Save the full chat or only the messages you
+select.
+3
+Keep headings, lists, tables and code
+blocks.
+4
+Export as Markdown and as PDF.
+5
+Name the file from the chat's title.
+Done when
+A long chat of 50 or more messages saves
+completely.
+Code from the saved file can be copied and
+still runs.
+Tables stay as tables.
+It sends nothing to any server.
+Small hint
+Start with Markdown on one chat site. Ask your agent to find how the page separates your messages from the
+AI's. Add PDF and the second site after that works.
+chat.example.com/c/prep
+Explain RAG simply
+def retrieve(query):
+Save this chat
+Messages
+24
+Code blocks
+3
+Save as PDF
+Save as Markdown
+
+
+--- Page 15 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 15 of 19
+PROJECT
+13
+SECTION C · CHROME EXTENSIONS
+Style Spy
+Click any website to grab its colours and fonts, then save them as a kit.
+Medium
+Imagine this
+You land on a website with beautiful colours and fonts. You want that feel for your own project, but have no
+idea what they used. Build the tool that tells you in one click.
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Show the page's main colours, ranked by
+how much they are used.
+2
+Show its fonts, weights and sizes.
+3
+Click anything to copy it.
+4
+Save kits under a name.
+5
+Export a kit as CSS variables.
+Done when
+Check results by hand on 5 websites.
+Saved kits survive a Chrome restart.
+Paste a kit into a plain page and it picks up
+the style.
+Small hint
+Start with only the colours of visible elements. Ask your agent to read each element's final computed style,
+then count how much of the page uses each colour.
+any-nice-site.com
+Nice design
+Get started
+Colours
+Fonts
+Inter · 700 heading
+Lora · 400 body
+Copy as CSS
+
+
+--- Page 16 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 16 of 19
+PROJECT
+14
+SECTION C · CHROME EXTENSIONS
+Tab Goblin
+A goblin eats the tabs you ignored. It puts them to sleep and can bring
+them back.
+Medium
+Imagine this
+You have 47 tabs open, the laptop fan is screaming, and you're scared to close any of them. Build a goblin
+that clears the mess without losing anything you need.
+Tab Goblin
+47 tabs open
+31 asleep · goblin is full
+Physics lecture
+3 days old
+Laptop prices
+6 days old
+Internship form
+Keep
+Save session
+Feed the goblin
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Show tab count and a goblin whose mood
+changes with it.
+2
+List tabs by how long they have been
+ignored.
+3
+Put tabs to sleep without closing them.
+4
+A Keep list the goblin never touches.
+5
+Save a session and restore it.
+Done when
+It handles 30 open tabs smoothly.
+A half-filled form is never lost.
+A saved session restores after a Chrome
+restart.
+Sleeping tabs wake correctly when clicked.
+Small hint
+Start by listing tabs in order of last use. Then ask your agent to use Chrome's built-in tab discard feature, which
+frees memory without closing the tab.
+
+
+--- Page 17 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 17 of 19
+PROJECT
+15
+SECTION D · VIDEO, SKILLS AND DESIGN
+One-Minute Reel Cut
+Give your agent a 5-minute raw video of yourself and get back a 60-
+second vertical reel.
+Tough
+Best on a paid
+agent plan
+Imagine this
+You recorded a good 5-minute video, full of pauses, “umm”s and retakes. Editing it would take your whole
+evening. Let your agent do the work, while you direct it like an editor.
+9:16
+0:58
+edit plan
+raw-video.mp4
+5:12
+Red stays. Hatched gets cut.
+0:42 · 8 s silence
+1:18 · “umm, so basically”
+2:05 · repeated sentence
+Change plan
+Render reel
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Remove silences and filler words.
+2
+Crop to 9:16 and keep your face in frame.
+3
+Burn in captions with highlighted words.
+4
+Add a title card and audio fades.
+5
+Show the edit plan before cutting.
+Rule: Use only video you filmed yourself.
+Done when
+The reel is 60 seconds or shorter.
+Captions match the speech on a hand check
+of 20 lines.
+No sentence is cut off.
+It plays correctly on a phone.
+Small hint
+Start with a 1-minute clip. Ask your agent to make a transcript with timestamps, show its edit plan, then cut the
+video with ffmpeg. Add captions and the title last.
+Agents 
+Agents do the
+do the
+work
+work
+
+
+--- Page 18 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 18 of 19
+PROJECT
+16
+SECTION D · VIDEO, SKILLS AND DESIGN
+Your Own Skill
+Create one agent skill that works in a brand-new session.
+Medium
+Imagine this
+You keep pasting the same long instructions into your agent every time you revise or check a resume. Turn
+them into a skill, so one short command does it all.
+> /viva thermo-notes.pdf
+Q2. Why can no engine beat Carnot efficiency?
+> Because of friction
+Examiner: Partly. Friction lowers real engines, but what about an ideal one?
+Score: 3/5. 
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build: pick one
+1
+/viva: Asks viva questions from your notes,
+one at a time, then scores you.
+2
+/resume-roast: Checks a resume against a
+job post and gives blunt, specific fixes.
+3
+/one-page-revision: Turns a chapter into a
+one-page revision sheet.
+Done when
+It starts correctly in a fresh session.
+It works well on 3 different inputs.
+Run the same task without the skill. Show
+what got better.
+Small hint
+Do the task once in chat until the result is good. Then ask your agent to turn that conversation into a skill. Write
+the description clearly, because it decides when the skill runs.
+Reading notes. Asking 5 questions, one at a time.
+Revise page 14.
+
+
+--- Page 19 ---
+Bharat Space Education Research Centre
+GenAI Internship · Week 2 projects
+Page 19 of 19
+PROJECT
+17
+SECTION D · VIDEO, SKILLS AND DESIGN
+Same Page, New Design
+Build one plain page without any design skill, then redesign it with one.
+The words stay the same.
+Medium
+Imagine this
+You asked AI for a website and got something that works, but looks like every other AI page. See how much
+a design skill can change that, using the same words.
+Step 1: without a skill
+Step 3: with a design skill
+TECHNOVA 2026
+Three days of robotics, code and music.
+Register now
+Robotics · Hackathon · Music night
+→
+TECHNOVA 2026
+Three days of robotics, code and music.
+Register now
+Robotics
+Hackathon
+Music night
+Chai and Co.
+Fresh chai and snacks, all day.
+See today's special
+Masala chai ₹30 · Cold coffee ₹90 · Maska pav ₹45
+→
+Chai and Co.
+Fresh chai and snacks, all day.
+See today's special
+Masala chai ₹30
+Cold coffee ₹90
+Maska pav ₹45
+Bright Path Classes
+JEE and NEET batches near you.
+Book a free demo
+Small batches · Weekly tests · Doubt desk
+→
+Bright Path Classes
+JEE and NEET batches near you.
+Book a free demo
+Small batches
+Weekly tests
+Doubt desk
+Preview: an example only. Your design can differ, but it needs every feature below.
+What to build
+1
+Step 1, without a skill. Build a simple page
+for a college fest, café, coaching institute or
+your own idea. Use no design skill. Save it
+as before.html.
+2
+Step 2, add a design skill. Install
+Impeccable. You can also browse skills.sh
+for others, such as frontend-design or ui-ux-
+pro-max.
+3
+Step 3, redesign. Use the skill on the same
+page. Save it as after.html.
+Done when
+You have both before.html and after.html.
+The words in both files match.
+The redesign works on a phone.
+You can name 3 design changes and why
+each one helps.
+Small hint
+Ask the skill to critique your page first, then fix the biggest problems one at a time. For a bonus, try a second
+design skill from skills.sh on the same page and compare.
+
+

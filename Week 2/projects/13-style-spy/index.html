@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Spy - Web Style Extractor Studio</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    .preview-web {
+      flex: 1;
+      padding: 2.5rem;
+      overflow-y: auto;
+    }
+    .sample-site {
+      background: #ffffff;
+      color: #1e293b;
+      padding: 3rem;
+      border-radius: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .sample-site h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1e1b4b;
+      margin-bottom: 1rem;
+    }
+    .sample-site p {
+      font-size: 1.1rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .sample-btn {
+      padding: 0.75rem 1.5rem;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+    .side-panel {
+      width: 420px;
+      border-left: 1px solid #334155;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-web">
+    <div class="sample-site">
+      <h1>Nice design</h1>
+      <p>Clean modern landing page showcasing vibrant color swatches, typography hierarchy, and CSS design variables ready to extract with Style Spy.</p>
+      <button class="sample-btn">Get started</button>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <iframe src="popup.html"></iframe>
+  </div>
+</body>
+</html>

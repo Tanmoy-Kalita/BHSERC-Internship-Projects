@@ -1,0 +1,15 @@
+{
+  "name": "Bill Book",
+  "short_name": "BillBook",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a5c3c",
+  "theme_color": "#2d8a4f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

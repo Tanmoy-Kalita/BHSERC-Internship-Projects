@@ -1,0 +1,17 @@
+[
+  { "id": 1, "subject": "Botany", "question": "The powerhouse of the cell is known as:", "options": ["Ribosome", "Mitochondria", "Golgi apparatus", "Lysosome"], "correct": 1 },
+  { "id": 2, "subject": "Botany", "question": "Chlorophyll pigment contains which metal ion at its center?", "options": ["Iron", "Magnesium", "Copper", "Zinc"], "correct": 1 },
+  { "id": 3, "subject": "Botany", "question": "Water conduction in angiosperms primarily occurs through:", "options": ["Tracheids", "Xylem vessels", "Sieve tubes", "Companion cells"], "correct": 1 },
+  { "id": 4, "subject": "Botany", "question": "The primary carbon dioxide acceptor in C4 plants is:", "options": ["RuBP", "PEP", "PGA", "OAA"], "correct": 1 },
+  { "id": 5, "subject": "Botany", "question": "Gaseous plant hormone responsible for fruit ripening is:", "options": ["Auxin", "Gibberellin", "Cytokinin", "Ethylene"], "correct": 3 },
+  { "id": 6, "subject": "Zoology", "question": "Normal human blood pressure reading in mmHg is:", "options": ["100/60", "120/80", "140/90", "160/100"], "correct": 1 },
+  { "id": 7, "subject": "Zoology", "question": "Which enzyme in gastric juice digests milk proteins in infants?", "options": ["Pepsin", "Rennin", "Trypsin", "Amylase"], "correct": 1 },
+  { "id": 8, "subject": "Zoology", "question": "Universal donor blood group in ABO system is:", "options": ["A positive", "B negative", "AB positive", "O negative"], "correct": 3 },
+  { "id": 9, "subject": "Zoology", "question": "Functional unit of the human kidney is called:", "options": ["Neuron", "Nephron", "Alveolus", "Hepatocyte"], "correct": 1 },
+  { "id": 10, "subject": "Zoology", "question": "Hormone responsible for lowering blood glucose level is:", "options": ["Glucagon", "Insulin", "Adrenaline", "Thyroxine"], "correct": 1 },
+  { "id": 11, "subject": "General", "question": "DNA structure was discovered by Watson and Crick in which year?", "options": ["1943", "1953", "1963", "1973"], "correct": 1 },
+  { "id": 12, "subject": "General", "question": "The smallest bone in the human body is the:", "options": ["Femur", "Incus", "Malleus", "Stapes"], "correct": 3 },
+  { "id": 13, "subject": "General", "question": "Which vitamin deficiency causes night blindness?", "options": ["Vitamin A", "Vitamin B1", "Vitamin C", "Vitamin D"], "correct": 0 },
+  { "id": 14, "subject": "General", "question": "Gas used by plants during light reactions of photosynthesis is:", "options": ["Carbon dioxide", "Oxygen", "Water vapor", "Nitrogen"], "correct": 0 },
+  { "id": 15, "subject": "General", "question": "Total number of ribs in typical adult human skeleton is:", "options": ["12 pairs (24)", "10 pairs (20)", "14 pairs (28)", "16 pairs (32)"], "correct": 0 }
+]

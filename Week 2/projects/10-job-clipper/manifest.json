@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Job Clipper",
+  "version": "1.0.0",
+  "description": "Clip job postings from any site. Auto-extracts title, company, location, salary, requirements. Export to CSV/Notion/Sheets. Track applications with Kanban board.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Job Clipper"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "scripting",
+    "activeTab",
+    "tabs",
+    "clipboardWrite",
+    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "clip-job": {
+      "suggested_key": { "default": "Alt+J" },
+      "description": "Clip current job posting"
+    },
+    "open-board": {
+      "suggested_key": { "default": "Alt+Shift+J" },
+      "description": "Open job board"
+    }
+  }
+}
