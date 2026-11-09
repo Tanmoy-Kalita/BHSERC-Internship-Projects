@@ -1,7 +1,4 @@
 # BSERC – Generative AI & AI Agents Internship
-
-This repository contains my hands-on work, assignments, experiments, and implementations developed during the **BSERC Generative AI & AI Agents Internship**.
-
 The purpose of this repository is to maintain an organized record of my learning, document practical implementations, and track my progress while exploring Generative AI concepts and technologies.
 
 ## About the Internship
@@ -101,15 +98,3 @@ Each project directory should contain its own README covering:
 - Add `.env` and other sensitive files to `.gitignore`.
 - Avoid uploading confidential internship documents or restricted materials.
 - Share repository access only with authorized collaborators.
-
-## Progress Tracking
-
-This repository will be updated throughout the internship to maintain a record of completed assignments, experiments, technical implementations, and key learnings.
-
----
-
-**Programme:** BSERC – Generative AI & AI Agents Internship
-
-**Mode:** Remote
-
-**Official Website:** https://ai.bserc.org/
